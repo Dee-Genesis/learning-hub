@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/jpg" href="assets/logos/learning-hub-footer.png">
+  <title>My Dashboard — The Professional Learning Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal:       #1f6390;
+      --teal-dark:  #1b3d5c;
+      --teal-light: #eaf1f9;
+      --gold:       #7ab7e0;
+      --ink:        #0b1b2f;
+      --ink-soft:   #1f3a57;
+      --mist:       #f8fafc;
+      --white:      #ffffff;
+      --border:     #e9edf2;
+      --error:      #c0392b;
+      --error-bg:   #fdf2f2;
+      --success:    #1a6b3c;
+      --success-bg: #f0faf5;
+      --sidebar-w:  260px;
+      --nav-h:      68px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--ink); background: var(--mist); min-height: 100vh; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ══ LOADING SCREEN ══════════════════════════════ */
+    #loadingScreen {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--teal-dark);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; gap: 1.25rem;
+    }
+    #loadingScreen img { height: 52px; opacity: .9; }
+    .load-spinner {
+      width: 36px; height: 36px;
+      border: 3px solid rgba(255,255,255,.2);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin .75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loadingScreen p { color: rgba(255,255,255,.65); font-size: .85rem; }
+
+    /* ══ LAYOUT ══════════════════════════════════════ */
+    #dashboardWrap { display: none; min-height: 100vh; }
+
+    /* ══ SIDEBAR ══════════════════════════════════════ */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--ink);
+      display: flex; flex-direction: column;
+      z-index: 200; overflow-y: auto;
+    }
+    .sidebar__brand {
+      padding: 1.5rem 1.25rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .sidebar__brand img { height: 38px; }
+    .sidebar__badge {
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: rgba(122,183,224,.15); border: 1px solid rgba(122,183,224,.3);
+      color: var(--gold); font-size: .65rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .2rem .65rem; border-radius: 12px; margin-top: .5rem;
+    }
+
+    /* Profile area */
+    .sidebar__profile {
+      padding: 1.25rem;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; gap: .85rem;
+    }
+    .avatar-wrap {
+      position: relative; flex-shrink: 0;
+      width: 52px; height: 52px;
+    }
+    .avatar-img {
+      width: 52px; height: 52px; border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(122,183,224,.4);
+      background: var(--teal-dark);
+    }
+    .avatar-initials {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--teal);
+      border: 2px solid rgba(122,183,224,.4);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700; color: var(--white);
+    }
+    .sidebar__profile-info { overflow: hidden; }
+    .sidebar__name {
+      font-size: .875rem; font-weight: 600; color: var(--white);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sidebar__programme {
+      font-size: .7rem; color: rgba(255,255,255,.5);
+      margin-top: .15rem; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical; overflow: hidden;
+    }
+
+    /* Nav links */
+    .sidebar__nav { flex: 1; padding: 1rem 0; }
+    .sidebar__section-label {
+      font-size: .65rem; font-weight: 700; color: rgba(255,255,255,.3);
+      text-transform: uppercase; letter-spacing: .12em;
+      padding: .75rem 1.25rem .35rem;
+    }
+    .sidebar__link {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .7rem 1.25rem;
+      font-size: .875rem; font-weight: 500; color: rgba(255,255,255,.65);
+      cursor: pointer; border-left: 3px solid transparent;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+    .sidebar__link:hover { background: rgba(255,255,255,.05); color: var(--white); }
+    .sidebar__link.active {
+      background: rgba(31,99,144,.25); color: var(--gold);
+      border-left-color: var(--gold);
+    }
+    .sidebar__link svg { flex-shrink: 0; opacity: .75; }
+    .sidebar__link.active svg { opacity: 1; }
+    .sidebar__footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .btn-signout {
+      display: flex; align-items: center; gap: .65rem;
+      width: 100%; padding: .6rem .75rem;
+      background: none; border: 1px solid rgba(255,255,255,.15);
+      border-radius: 8px; color: rgba(255,255,255,.6);
+      font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 500;
+      cursor: pointer; transition: background .2s, color .2s;
+    }
+    .btn-signout:hover { background: rgba(255,255,255,.07); color: var(--white); }
+
+    /* ══ MAIN ════════════════════════════════════════ */
+    .main { margin-left: var(--sidebar-w); min-height: 100vh; display: flex; flex-direction: column; }
+    .topbar {
+      background: var(--white); border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .topbar__title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 700; color: var(--ink);
+    }
+    .topbar__sub { font-size: .8rem; color: var(--ink-soft); margin-top: .1rem; }
+    .topbar__time { font-size: .78rem; color: var(--ink-soft); }
+    .content { padding: 2rem; flex: 1; }
+
+    /* ══ PANELS ══════════════════════════════════════ */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ══ WELCOME BANNER ══════════════════════════════ */
+    .welcome-banner {
+      background: linear-gradient(120deg, var(--teal-dark), var(--teal));
+      border-radius: 16px; padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem;
+      position: relative; overflow: hidden;
+    }
+    .welcome-banner::before {
+      content: ''; position: absolute; right: -40px; top: -40px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,.06); border-radius: 50%;
+    }
+    .welcome-banner__title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-weight: 700; color: var(--white); line-height: 1.2;
+    }
+    .welcome-banner__title span { color: var(--gold); }
+    .welcome-banner__sub { font-size: .875rem; color: rgba(255,255,255,.75); margin-top: .4rem; }
+    .welcome-banner__badge {
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3);
+      border-radius: 10px; padding: .75rem 1.25rem; text-align: center; flex-shrink: 0;
+    }
+    .welcome-banner__badge-label { font-size: .65rem; font-weight: 700; color: rgba(255,255,255,.6); text-transform: uppercase; letter-spacing: .1em; }
+    .welcome-banner__badge-val { font-size: .95rem; font-weight: 700; color: var(--white); margin-top: .2rem; }
+
+    /* ══ INFO CARDS ══════════════════════════════════ */
+    .info-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem; margin-bottom: 2rem;
+    }
+    .info-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .info-card__icon {
+      width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .info-card__icon.teal  { background: var(--teal-light); color: var(--teal); }
+    .info-card__icon.green { background: var(--success-bg); color: var(--success); }
+    .info-card__icon.gold  { background: #fff8e6; color: #b07d00; }
+    .info-card__label { font-size: .75rem; color: var(--ink-soft); margin-bottom: .2rem; }
+    .info-card__val { font-size: .95rem; font-weight: 700; color: var(--ink); line-height: 1.3; }
+
+    /* ══ NOTICE BOX ══════════════════════════════════ */
+    .notice {
+      border-radius: 12px; padding: 1.25rem 1.5rem;
+      display: flex; align-items: flex-start; gap: .85rem;
+      margin-bottom: 1.5rem; font-size: .875rem; line-height: 1.65;
+    }
+    .notice svg { flex-shrink: 0; margin-top: .1rem; }
+    .notice.info    { background: var(--teal-light); color: var(--ink-soft); border: 1px solid #b3d4ec; }
+    .notice.success { background: var(--success-bg); color: var(--success); border: 1px solid #a3d9b8; }
+    .notice.warning { background: #fffbf0; color: #7a5c00; border: 1px solid #f0d88a; }
+
+    /* ══ SECTION HEADER ══════════════════════════════ */
+    .section-hd { margin-bottom: 1.25rem; }
+    .section-hd h3 { font-size: 1rem; font-weight: 700; color: var(--ink); }
+    .section-hd p  { font-size: .8rem; color: var(--ink-soft); margin-top: .2rem; }
+
+    /* ══ PROFILE FORM ════════════════════════════════ */
+    .card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 2rem; margin-bottom: 1.5rem;
+    }
+    .card h4 { font-size: .95rem; font-weight: 700; color: var(--ink); margin-bottom: 1.5rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field { margin-bottom: 0; }
+    .field label {
+      display: block; font-size: .78rem; font-weight: 600;
+      color: var(--ink-soft); margin-bottom: .4rem; letter-spacing: .02em;
+    }
+    .field input, .field select {
+      width: 100%; padding: .7rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--ink);
+      background: var(--mist); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus, .field select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(31,99,144,.12);
+      background: var(--white);
+    }
+    .field input:disabled, .field select:disabled {
+      opacity: .6; cursor: not-allowed;
+    }
+    .field-note { font-size: .72rem; color: var(--ink-soft); margin-top: .3rem; }
+
+    .btn-primary {
+      padding: .72rem 1.75rem;
+      background: var(--teal); color: var(--white);
+      font-family: 'Inter', sans-serif; font-size: .875rem; font-weight: 700;
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: background .2s, transform .15s;
+      display: inline-flex; align-items: center; gap: .5rem;
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--teal-dark); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    /* ══ AVATAR DISPLAY AREA ══════════════════════════ */
+    .avatar-upload-area {
+      display: flex; align-items: center; gap: 2rem;
+      padding: 1.5rem; background: var(--mist);
+      border: 1.5px solid var(--border); border-radius: 12px;
+      margin-bottom: 1.5rem; flex-wrap: wrap;
+    }
+    .avatar-large {
+      width: 90px; height: 90px; border-radius: 50%; flex-shrink: 0;
+      object-fit: cover; border: 3px solid var(--teal-light);
+      background: var(--teal-dark);
+    }
+    .avatar-large-initials {
+      width: 90px; height: 90px; border-radius: 50%; flex-shrink: 0;
+      background: var(--teal); border: 3px solid var(--teal-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.75rem; font-weight: 700; color: var(--white);
+    }
+
+    /* ══ FORM ALERT ══════════════════════════════════ */
+    .form-alert {
+      padding: .75rem 1rem; border-radius: 8px;
+      font-size: .82rem; margin-bottom: 1.25rem; display: none;
+      align-items: center; gap: .5rem;
+    }
+    .form-alert.error   { background: var(--error-bg);   border: 1px solid #f5c6c6; color: var(--error);   display: flex; }
+    .form-alert.success { background: var(--success-bg); border: 1px solid #a3d9b8; color: var(--success); display: flex; }
+
+    /* ══ MATERIALS ═══════════════════════════════════ */
+    .materials-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem; margin-top: 1rem;
+    }
+    .material-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem;
+      display: flex; flex-direction: column; gap: .75rem;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .material-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.08); transform: translateY(-2px); }
+    .material-card__icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: #fff0f0; color: #c0392b;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .material-card__title {
+      font-size: .95rem; font-weight: 700; color: var(--ink); line-height: 1.3;
+    }
+    .material-card__meta {
+      font-size: .75rem; color: var(--ink-soft);
+    }
+    .material-card__btn {
+      display: inline-flex; align-items: center; gap: .45rem;
+      padding: .55rem 1rem; margin-top: auto;
+      background: var(--teal); color: var(--white);
+      font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 600;
+      border: none; border-radius: 8px; cursor: pointer; text-decoration: none;
+      transition: background .2s;
+    }
+    .material-card__btn:hover { background: var(--teal-dark); }
+    .materials-empty {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 3rem 2rem; text-align: center;
+      color: var(--ink-soft); font-size: .875rem;
+    }
+    .materials-empty svg { margin: 0 auto 1rem; opacity: .3; }
+
+    /* ══ TOAST ════════════════════════════════════════ */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      padding: .85rem 1.25rem; border-radius: 10px;
+      font-size: .85rem; font-weight: 600; color: var(--white);
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+      z-index: 9999; display: none; align-items: center; gap: .5rem;
+      animation: slideUp .3s ease;
+    }
+    .toast.show   { display: flex; }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--error); }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* ══ RESPONSIVE ══════════════════════════════════ */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .info-grid { grid-template-columns: 1fr 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .info-grid { grid-template-columns: 1fr; }
+      .content { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOADING ════════════════════════════════════════ -->
+<div id="loadingScreen">
+  <img src="assets/logos/learning-hub-footer.png" alt="TPLH"
+       onerror="this.onerror=null;this.src='assets/logos/learning-hub-logo.png'" />
+  <div class="load-spinner"></div>
+  <p>Loading your dashboard…</p>
+</div>
+
+<!-- ══ DASHBOARD ══════════════════════════════════════ -->
+<div id="dashboardWrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img src="assets/logos/learning-hub-footer.png" alt="TPLH"
+           onerror="this.onerror=null;this.src='assets/logos/learning-hub-logo.png'" />
+      <div class="sidebar__badge">Student Portal</div>
+    </div>
+
+    <div class="sidebar__profile">
+      <div class="avatar-wrap">
+        <div class="avatar-initials" id="sidebarAvatarInitials"></div>
+        <img class="avatar-img" id="sidebarAvatarImg" src="" alt="Profile"
+             style="display:none;" />
+      </div>
+      <div class="sidebar__profile-info">
+        <div class="sidebar__name" id="sidebarName">Loading…</div>
+        <div class="sidebar__programme" id="sidebarProgramme">—</div>
+      </div>
+    </div>
+
+    <nav class="sidebar__nav">
+      <div class="sidebar__section-label">Main</div>
+      <div class="sidebar__link active" onclick="switchPanel('overview', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Overview
+      </div>
+      <div class="sidebar__link" onclick="switchPanel('profile', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        My Profile
+      </div>
+      <div class="sidebar__section-label">Learning</div>
+      <div class="sidebar__link" onclick="switchPanel('materials', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Study Materials
+      </div>
+      <div class="sidebar__link" onclick="switchPanel('exams', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Examinations
+      </div>
+      <div class="sidebar__link" onclick="switchPanel('certificates', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+        Certificates
+      </div>
+    </nav>
+
+    <div class="sidebar__footer">
+      <button class="btn-signout" onclick="signOutStudent()">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar__title" id="topbarTitle">Overview</div>
+        <div class="topbar__sub" id="topbarSub">Welcome to your student portal</div>
+      </div>
+      <div class="topbar__time" id="topbarTime"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="panel active" id="panel-overview">
+
+        <div class="welcome-banner">
+          <div>
+            <div class="welcome-banner__title">
+              Welcome back, <span id="welcomeName">—</span>
+            </div>
+            <div class="welcome-banner__sub" id="welcomeSub">Here's your enrolment summary.</div>
+          </div>
+          <div class="welcome-banner__badge">
+            <div class="welcome-banner__badge-label">Account Status</div>
+            <div class="welcome-banner__badge-val" id="statusBadge">—</div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-card__icon teal">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+            <div>
+              <div class="info-card__label">Programme Enrolled</div>
+              <div class="info-card__val" id="cardProgramme">—</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon green">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <div>
+              <div class="info-card__label">Enrolment Date</div>
+              <div class="info-card__val" id="cardEnrolDate">—</div>
+            </div>
+          </div>
+          <div class="info-card">
+            <div class="info-card__icon gold">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <div class="info-card__label">Student ID</div>
+              <div class="info-card__val" id="cardStudentId">—</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="notice info" id="noticeBox">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div id="noticeText">Your study materials and examination access will be available here once uploaded by your programme administrator.</div>
+        </div>
+
+        <div class="section-hd">
+          <h3>Quick Actions</h3>
+        </div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+          <button class="btn-primary" onclick="switchPanel('profile', document.querySelector('[onclick*=profile]'))">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Update My Profile
+          </button>
+          <button class="btn-primary" style="background:var(--teal-dark);" onclick="switchPanel('materials', document.querySelectorAll('.sidebar__link')[3])">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            View Study Materials
+          </button>
+        </div>
+      </div>
+
+      <!-- ── PROFILE ── -->
+      <div class="panel" id="panel-profile">
+
+        <div class="form-alert" id="profileAlert"></div>
+
+        <!-- Profile photo -->
+        <div class="card">
+          <h4>Profile Photo</h4>
+          <div class="avatar-upload-area">
+            <div id="profileAvatarInitials" class="avatar-large-initials"></div>
+            <img id="profileAvatarImg" class="avatar-large" src="" alt="Profile photo" style="display:none;" />
+          </div>
+        </div>
+
+        <!-- Personal details -->
+        <div class="card">
+          <h4>Personal Details</h4>
+          <div class="form-grid" style="margin-bottom:1rem;">
+            <div class="field">
+              <label>First Name</label>
+              <input type="text" id="profileFirstName" placeholder="First name" />
+            </div>
+            <div class="field">
+              <label>Last Name</label>
+              <input type="text" id="profileLastName" placeholder="Last name" />
+            </div>
+            <div class="field">
+              <label>Email Address</label>
+              <input type="email" id="profileEmail" disabled />
+              <div class="field-note">Email address cannot be changed here.</div>
+            </div>
+            <div class="field">
+              <label>Phone Number</label>
+              <input type="tel" id="profilePhone" placeholder="Your phone number" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:1rem;">
+            <label>Programme / Course of Study</label>
+            <input type="text" id="profileProgramme" disabled />
+            <div class="field-note">Contact your administrator to change your programme.</div>
+          </div>
+          <button class="btn-primary" id="saveProfileBtn" onclick="saveProfile()">
+            Save Changes
+          </button>
+        </div>
+
+        <!-- Change password -->
+        <div class="card">
+          <h4>Change Password</h4>
+          <div class="form-grid" style="margin-bottom:1rem;">
+            <div class="field">
+              <label>New Password</label>
+              <input type="password" id="newPassword" placeholder="Min. 8 characters" />
+            </div>
+            <div class="field">
+              <label>Confirm New Password</label>
+              <input type="password" id="confirmNewPassword" placeholder="Repeat new password" />
+            </div>
+          </div>
+          <button class="btn-primary" style="background:var(--teal-dark);" onclick="changePassword()">
+            Update Password
+          </button>
+        </div>
+      </div>
+
+      <!-- ── STUDY MATERIALS ── -->
+      <div class="panel" id="panel-materials">
+        <div class="section-hd">
+          <h3>Study Materials</h3>
+          <p id="materialsSubtitle">Loading materials for your programme…</p>
+        </div>
+        <div id="materialsList"></div>
+      </div>
+
+      <!-- ── EXAMINATIONS ── -->
+      <div class="panel" id="panel-exams">
+        <div class="notice info">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>Your examination schedule and assessment links will appear here when made available by your administrator.</div>
+        </div>
+      </div>
+
+      <!-- ── CERTIFICATES ── -->
+      <div class="panel" id="panel-certificates">
+        <div class="notice info">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <div>Certificates will be available here upon successful completion of your programme.</div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /dashboardWrap -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ══ FIREBASE ════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }   from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut, updatePassword, EmailAuthProvider, reauthenticateWithCredential }
+                           from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, serverTimestamp,
+         collection, query, where, getDocs, orderBy }
+                           from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+// ── Config ────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyB05KazE7SqBjZQGPXGVdC7QVtrZjLRazU",
+  authDomain:        "learning-hub-bf93c.firebaseapp.com",
+  projectId:         "learning-hub-bf93c",
+  storageBucket:     "learning-hub-bf93c.firebasestorage.app",
+  messagingSenderId: "317680009277",
+  appId:             "1:317680009277:web:21344fbe84b1f07bf9ea54",
+};
+
+const app     = initializeApp(firebaseConfig);
+const auth    = getAuth(app);
+const db      = getFirestore(app);
+
+let currentUser      = null;
+let studentData      = null;
+let dashboardLoaded  = false; // only run the full check-and-load flow once per session
+
+// ── Auth gate ─────────────────────────────────────────
+// NOTE: onAuthStateChanged can fire more than once per page life — e.g. when
+// the tab regains focus or the ID token silently refreshes in the background.
+// We must NOT redo the Firestore lookup (and definitely not sign the user out)
+// every time it re-fires. We only do the heavy "load + verify" work the first
+// time we see a real user, and after that we just let token refreshes pass
+// through silently.
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    // Only bounce to login if we previously had nothing loaded.
+    // (If dashboardLoaded is true and user suddenly becomes null, that's a
+    // real sign-out, e.g. via signOutStudent(), so redirecting is correct.)
+    window.location.href = 'login.html';
+    return;
+  }
+
+  if (dashboardLoaded) {
+    // Just a token refresh / tab-focus re-fire. Nothing to do.
+    return;
+  }
+
+  try {
+    await user.reload();
+  } catch (e) {
+    // Transient network error while reloading user — don't nuke the session,
+    // just retry on the next auth state change / page interaction.
+    console.warn('user.reload() failed, will retry:', e);
+    return;
+  }
+
+  // ── TEMPORARY DEBUG LOG — remove once bounce issue is fixed ──
+  console.log('[DEBUG] uid:', user.uid, '| emailVerified:', user.emailVerified);
+
+  if (!user.emailVerified) {
+    console.log('[DEBUG] Bounced because emailVerified is false.');
+    await signOut(auth);
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try {
+    const snap = await getDoc(doc(db, 'students', user.uid));
+
+    console.log('[DEBUG] students doc exists:', snap.exists());
+
+    if (!snap.exists()) {
+      console.log('[DEBUG] Bounced because student doc does not exist for uid:', user.uid);
+      await signOut(auth);
+      window.location.href = 'login.html';
+      return;
+    }
+
+    const data = snap.data();
+    console.log('[DEBUG] status field:', data.status);
+
+    if (data.status !== 'approved') {
+      console.log('[DEBUG] Bounced because status is not approved. Actual value:', JSON.stringify(data.status));
+      await signOut(auth);
+      window.location.href = 'login.html';
+      return;
+    }
+
+    currentUser     = user;
+    studentData     = data;
+    dashboardLoaded = true;
+    populateDashboard(data);
+    hideLanding();
+    console.log('[DEBUG] Dashboard loaded successfully, no bounce.');
+
+  } catch (e) {
+    // IMPORTANT: a failed/slow Firestore read (e.g. tab was backgrounded and
+    // throttled, brief network blip, momentary rules/latency hiccup) is NOT
+    // proof the user is unauthorized. Signing them out here was the #1 cause
+    // of "keeps bouncing back to login." We just log it and let them retry
+    // (e.g. via a refresh) instead of force-logging-out on every transient error.
+    console.error('[DEBUG] Failed to load student profile (this is the bounce-causing error if you see it):', e);
+    showToast('Could not load your profile. Check your connection and refresh.', 'error');
+  }
+});
+
+// ── Populate all dashboard data ───────────────────────
+function populateDashboard(data) {
+  const initials = getInitials(data.fullName || data.firstName || '?');
+
+  // Sidebar
+  document.getElementById('sidebarName').textContent      = data.fullName || '—';
+  document.getElementById('sidebarProgramme').textContent = programmeName(data.programme);
+  setInitialsOrPhoto('sidebarAvatarInitials', 'sidebarAvatarImg', initials, data.photoURL);
+
+  // Overview
+  document.getElementById('welcomeName').textContent  = data.firstName || data.fullName || '—';
+  document.getElementById('welcomeSub').textContent   = `Programme: ${programmeName(data.programme)}`;
+  document.getElementById('statusBadge').textContent  = '✅ Active';
+  document.getElementById('cardProgramme').textContent = programmeName(data.programme);
+  document.getElementById('cardEnrolDate').textContent = fmtDate(data.approvedAt);
+  document.getElementById('cardStudentId').textContent = currentUser.uid.substring(0, 12).toUpperCase();
+
+  // Profile form
+  document.getElementById('profileFirstName').value  = data.firstName  || '';
+  document.getElementById('profileLastName').value   = data.lastName   || '';
+  document.getElementById('profileEmail').value      = data.email      || '';
+  document.getElementById('profilePhone').value      = data.phone      || '';
+  document.getElementById('profileProgramme').value  = programmeName(data.programme);
+  setInitialsOrPhoto('profileAvatarInitials', 'profileAvatarImg', initials, data.photoURL);
+
+  // Live clock
+  setInterval(() => {
+    document.getElementById('topbarTime').textContent =
+      new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+  }, 1000);
+}
+
+function hideLanding() {
+  document.getElementById('loadingScreen').style.display  = 'none';
+  document.getElementById('dashboardWrap').style.display  = 'block';
+}
+
+// ── Avatar: show photo or initials ────────────────────
+function setInitialsOrPhoto(initialsId, imgId, initials, photoURL) {
+  const initialsEl = document.getElementById(initialsId);
+  const imgEl      = document.getElementById(imgId);
+  if (photoURL) {
+    imgEl.src             = photoURL;
+    imgEl.style.display   = 'block';
+    initialsEl.style.display = 'none';
+  } else {
+    initialsEl.textContent   = initials;
+    initialsEl.style.display = 'flex';
+    imgEl.style.display      = 'none';
+  }
+}
+
+// ── Save profile ──────────────────────────────────────
+window.saveProfile = async () => {
+  const firstName = document.getElementById('profileFirstName').value.trim();
+  const lastName  = document.getElementById('profileLastName').value.trim();
+  const phone     = document.getElementById('profilePhone').value.trim();
+  const alert     = document.getElementById('profileAlert');
+  const btn       = document.getElementById('saveProfileBtn');
+
+  if (!firstName || !lastName) {
+    showFormAlert(alert, 'error', 'Please enter your first and last name.');
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Saving…';
+  alert.style.display = 'none';
+
+  try {
+    await updateDoc(doc(db, 'students', currentUser.uid), {
+      firstName, lastName,
+      fullName:  `${firstName} ${lastName}`,
+      phone:     phone || null,
+      updatedAt: serverTimestamp(),
+    });
+
+    studentData.firstName = firstName;
+    studentData.lastName  = lastName;
+    studentData.fullName  = `${firstName} ${lastName}`;
+    studentData.phone     = phone;
+
+    document.getElementById('sidebarName').textContent  = studentData.fullName;
+    document.getElementById('welcomeName').textContent  = firstName;
+    const initials = getInitials(studentData.fullName);
+    document.getElementById('sidebarAvatarInitials').textContent  = initials;
+    document.getElementById('profileAvatarInitials').textContent  = initials;
+
+    showFormAlert(alert, 'success', '✅ Profile updated successfully.');
+    showToast('Profile saved!', 'success');
+  } catch (err) {
+    console.error(err);
+    showFormAlert(alert, 'error', 'Failed to save. Please try again.');
+  }
+
+  btn.disabled = false; btn.textContent = 'Save Changes';
+};
+
+// ── Change password ───────────────────────────────────
+window.changePassword = async () => {
+  const newPw  = document.getElementById('newPassword').value;
+  const confPw = document.getElementById('confirmNewPassword').value;
+  const alert  = document.getElementById('profileAlert');
+
+  if (newPw.length < 8) {
+    showFormAlert(alert, 'error', 'Password must be at least 8 characters.'); return;
+  }
+  if (newPw !== confPw) {
+    showFormAlert(alert, 'error', 'Passwords do not match.'); return;
+  }
+
+  try {
+    await updatePassword(currentUser, newPw);
+    document.getElementById('newPassword').value        = '';
+    document.getElementById('confirmNewPassword').value = '';
+    showFormAlert(alert, 'success', '✅ Password updated successfully.');
+    showToast('Password changed!', 'success');
+  } catch (err) {
+    if (err.code === 'auth/requires-recent-login') {
+      showFormAlert(alert, 'error', 'For security, please sign out and sign back in before changing your password.');
+    } else {
+      showFormAlert(alert, 'error', 'Failed to update password. Please try again.');
+    }
+  }
+};
+
+// ── Load study materials ──────────────────────────────
+async function loadMaterials(programme) {
+  const list     = document.getElementById('materialsList');
+  const subtitle = document.getElementById('materialsSubtitle');
+  list.innerHTML = '<p style="color:var(--ink-soft);font-size:.875rem;">Loading…</p>';
+
+  try {
+    const q    = query(
+      collection(db, 'materials'),
+      where('programme', '==', programme),
+      orderBy('uploadedAt', 'desc')
+    );
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      subtitle.textContent = programmeName(programme);
+      list.innerHTML = `
+        <div class="materials-empty">
+          <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          <p><strong>No materials yet</strong></p>
+          <p>Your administrator hasn't uploaded any materials for your programme yet. Check back soon.</p>
+        </div>`;
+      return;
+    }
+
+    subtitle.textContent = `${snap.size} file${snap.size !== 1 ? 's' : ''} available for ${programmeName(programme)}`;
+
+    const grid = document.createElement('div');
+    grid.className = 'materials-grid';
+
+    snap.forEach(docSnap => {
+      const m    = docSnap.data();
+      const date = m.uploadedAt
+        ? (m.uploadedAt.toDate ? m.uploadedAt.toDate() : new Date(m.uploadedAt))
+            .toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
+        : '—';
+      const size = m.fileSizeKB ? (m.fileSizeKB >= 1024
+        ? `${(m.fileSizeKB/1024).toFixed(1)} MB`
+        : `${m.fileSizeKB} KB`) : '';
+
+      const card = document.createElement('div');
+      card.className = 'material-card';
+      card.innerHTML = `
+        <div style="display:flex;align-items:center;gap:.85rem;">
+          <div class="material-card__icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+          <div class="material-card__title">${m.title || m.fileName || 'Untitled'}</div>
+        </div>
+        <div class="material-card__meta">
+          ${size ? `${size} &nbsp;·&nbsp; ` : ''}Uploaded ${date}
+        </div>
+        <a class="material-card__btn" href="${m.downloadURL}" target="_blank" rel="noopener">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Open / Download
+        </a>`;
+      grid.appendChild(card);
+    });
+
+    list.innerHTML = '';
+    list.appendChild(grid);
+
+  } catch (err) {
+    console.error('loadMaterials error:', err);
+    list.innerHTML = `<div class="notice warning"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div>Could not load materials. Check your connection and try again.</div></div>`;
+  }
+}
+
+// ── Sign out ──────────────────────────────────────────
+window.signOutStudent = async () => {
+  await signOut(auth);
+  window.location.href = 'login.html';
+};
+
+// ── Panel switching ───────────────────────────────────
+window.switchPanel = (panelId, el) => {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar__link').forEach(l => l.classList.remove('active'));
+  document.getElementById('panel-' + panelId).classList.add('active');
+  if (el) el.classList.add('active');
+
+  const titles = {
+    overview:     ['Overview',         'Your enrolment summary'],
+    profile:      ['My Profile',       'Update your personal details and photo'],
+    materials:    ['Study Materials',  'Access your course content'],
+    exams:        ['Examinations',     'View and sit your assessments'],
+    certificates: ['Certificates',     'Download your certificates'],
+  };
+  const [title, sub] = titles[panelId] || ['Dashboard', ''];
+  document.getElementById('topbarTitle').textContent = title;
+  document.getElementById('topbarSub').textContent   = sub;
+
+  // Load materials when switching to that panel
+  if (panelId === 'materials' && studentData) {
+    loadMaterials(studentData.programme);
+  }
+
+  // Scroll to top on mobile
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// ── Helpers ───────────────────────────────────────────
+function getInitials(name) {
+  return name.split(' ').filter(Boolean).slice(0, 2)
+    .map(n => n[0].toUpperCase()).join('');
+}
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+
+function programmeName(val) {
+  const map = {
+    'diploma-program': 'Diploma Program',
+    'advanced-diploma': 'Advanced Diploma Program',
+    'postgraduate-diploma': 'Post Graduate Diploma',
+    'mba': 'Master of Business Administration (MBA)',
+    'dba': 'Doctor of Business Administration (DBA)',
+    'spec-business-management': 'Business Management',
+    'spec-strategic-leadership': 'Strategic Management & Leadership',
+    'spec-finance-accounting': 'Finance & Accounting',
+    'spec-marketing': 'Marketing & Consumer Strategy',
+    'spec-human-resources': 'Human Resource Management',
+    'spec-international-business': 'International Business',
+    'spec-healthcare-management': 'Healthcare Management',
+    'spec-project-innovation': 'Project & Innovation Management',
+    'spec-oil-gas': 'Oil & Gas Management',
+    'spec-cybersecurity': 'Cybersecurity & Digital Business',
+    'spec-aviation': 'Aviation & Transport Management',
+    'spec-real-estate': 'Real Estate & Property Development',
+    'cilg-level1': 'Level 1 — Foundation Certificate in Leadership & Governance',
+    'cilg-level2': 'Level 2 — Diploma in Leadership & Governance',
+    'cilg-level3': 'Level 3 — Advanced Diploma in Leadership & Governance (ACILG)',
+    'cilg-level4': 'Level 4 — Executive Diploma in Leadership & Governance (MCILG)',
+    'cilg-level5': 'Level 5 — Chartered Professional in Leadership & Governance (FCILG)',
+    'caigp': 'CAIGP — Certified AI Governance Professional',
+    'chrm': 'CHRM — Certified Human Resource Manager',
+    'csol': 'CSOL — Certified Strategic Organisational Leadership',
+    'cpage': 'CPAGE — Certified Public Administration & Governance Expert',
+    'cpm': 'CPM — Certified Project Manager',
+    'clgp': 'CLGP — Certified Leadership Governance Professional',
+    'ccrm': 'CCRM — Certified Corporate Risk Manager',
+    'ceem': 'CEEM — Certified ESG & Environmental Manager',
+    'cdgp': 'CDGP — Certified Data Governance Professional',
+    'csmp': 'CSMP — Certified Strategy & Management Professional',
+    'cppm': 'CPPM — Certified Policy & Public Management Professional',
+    'cethm': 'CETHM — Certified Ethics & Compliance Professional',
+    'cdtl': 'CDTL — Certified Digital Transformation Leader',
+    'ccsp': 'CCSP — Certified Change & Strategy Professional',
+    'cnlp': 'CNLP — Certified Non-Profit Leadership Professional',
+    'cwlp': 'CWLP — Certified Women in Leadership Professional',
+    'ciet-professional-cert': 'Professional Certification (CIET)',
+    'ciet-membership': 'Membership (CIET)',
+    'ciet-qualification': 'Qualification Pathway (CIET)',
+    'other': 'Other / Not Yet Decided',
+  };
+  return map[val] || val || '—';
+}
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function showFormAlert(el, type, msg) {
+  el.className = `form-alert ${type}`;
+  el.innerHTML = msg;
+}
+</script>
+
+</body>
+</html>

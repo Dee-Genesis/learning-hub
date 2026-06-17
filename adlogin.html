@@ -1,0 +1,1831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/jpg" href="assets/logos/learning-hub-footer.png">
+  <title>Admin Portal — The Professional Learning Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --teal:       #1f6390;
+      --teal-dark:  #1b3d5c;
+      --teal-light: #eaf1f9;
+      --gold:       #7ab7e0;
+      --ink:        #0b1b2f;
+      --ink-soft:   #1f3a57;
+      --mist:       #f8fafc;
+      --white:      #ffffff;
+      --border:     #e9edf2;
+      --error:      #c0392b;
+      --error-bg:   #fdf2f2;
+      --success:    #1a6b3c;
+      --success-bg: #f0faf5;
+      --warn:       #7a5c00;
+      --warn-bg:    #fffbf0;
+      --sidebar-w:  260px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--ink); background: var(--mist); }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ══════════════════════════════════════════
+       LOGIN SCREEN
+    ══════════════════════════════════════════ */
+    #loginScreen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #0b1b2f 0%, var(--teal-dark) 60%, var(--teal) 100%);
+      padding: 2rem;
+    }
+    .login-box {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 3rem 2.5rem;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.35);
+    }
+    .login-logo {
+      text-align: center; margin-bottom: 2rem;
+    }
+    .login-logo img { height: 48px; margin: 0 auto 1rem; }
+    .login-badge {
+      display: inline-flex; align-items: center; gap: .4rem;
+      background: var(--teal-light); color: var(--teal);
+      font-size: .7rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .3rem .85rem; border-radius: 20px;
+    }
+    .login-badge::before {
+      content: ''; width: 6px; height: 6px;
+      background: var(--teal); border-radius: 50%;
+    }
+    .login-box h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; font-weight: 700;
+      color: var(--ink); margin-bottom: .35rem; margin-top: 1.5rem;
+    }
+    .login-box p { font-size: .85rem; color: var(--ink-soft); margin-bottom: 2rem; }
+
+    .field { margin-bottom: 1.1rem; }
+    .field label {
+      display: block; font-size: .78rem; font-weight: 600;
+      color: var(--ink-soft); margin-bottom: .4rem; letter-spacing: .02em;
+    }
+    .field input {
+      width: 100%; padding: .72rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .875rem; color: var(--ink);
+      background: var(--mist); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .field input:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(31,99,144,.12);
+      background: var(--white);
+    }
+    .field input.err { border-color: var(--error); }
+
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 2.8rem; }
+    .pw-toggle {
+      position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: var(--ink-soft); display: flex; align-items: center;
+    }
+    .pw-toggle:hover { color: var(--teal); }
+
+    .login-alert {
+      display: none; padding: .75rem 1rem;
+      background: var(--error-bg); border: 1px solid #f5c6c6;
+      border-radius: 8px; color: var(--error);
+      font-size: .82rem; margin-bottom: 1rem;
+    }
+    .login-alert.show { display: flex; align-items: center; gap: .5rem; }
+
+    .btn-login {
+      width: 100%; padding: .85rem;
+      background: var(--teal); color: var(--white);
+      font-family: 'Inter', sans-serif; font-size: .95rem; font-weight: 700;
+      border: none; border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      transition: background .2s, transform .15s;
+    }
+    .btn-login:hover:not(:disabled) { background: var(--teal-dark); transform: translateY(-1px); }
+    .btn-login:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin .7s linear infinite; display: none;
+    }
+    .btn-login.loading .spinner { display: block; }
+    .btn-login.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .login-note {
+      margin-top: 1.5rem; text-align: center;
+      font-size: .78rem; color: var(--ink-soft);
+      border-top: 1px solid var(--border); padding-top: 1.25rem;
+    }
+
+    /* ══════════════════════════════════════════
+       DASHBOARD LAYOUT
+    ══════════════════════════════════════════ */
+    #dashboard { display: none; min-height: 100vh; }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: var(--sidebar-w);
+      background: var(--ink);
+      display: flex; flex-direction: column;
+      z-index: 200; overflow-y: auto;
+    }
+    .sidebar__brand {
+      padding: 1.5rem 1.25rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .sidebar__brand img { height: 40px; margin-bottom: .5rem; }
+    .sidebar__badge {
+      display: inline-flex; align-items: center; gap: .35rem;
+      background: rgba(122,183,224,.15);
+      border: 1px solid rgba(122,183,224,.3);
+      color: var(--gold); font-size: .65rem; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .2rem .65rem; border-radius: 12px;
+    }
+    .sidebar__admin-info {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .sidebar__admin-name {
+      font-size: .85rem; font-weight: 600; color: var(--white);
+    }
+    .sidebar__admin-role {
+      font-size: .72rem; color: rgba(255,255,255,.5); margin-top: .1rem;
+    }
+    .sidebar__nav { flex: 1; padding: 1rem 0; }
+    .sidebar__section-label {
+      font-size: .65rem; font-weight: 700; color: rgba(255,255,255,.3);
+      text-transform: uppercase; letter-spacing: .12em;
+      padding: .75rem 1.25rem .35rem;
+    }
+    .sidebar__link {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .7rem 1.25rem;
+      font-size: .875rem; font-weight: 500; color: rgba(255,255,255,.65);
+      cursor: pointer; border-left: 3px solid transparent;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+    .sidebar__link:hover { background: rgba(255,255,255,.05); color: var(--white); }
+    .sidebar__link.active {
+      background: rgba(31,99,144,.25);
+      color: var(--gold); border-left-color: var(--gold);
+    }
+    .sidebar__link svg { flex-shrink: 0; opacity: .75; }
+    .sidebar__link.active svg { opacity: 1; }
+    .sidebar__badge-count {
+      margin-left: auto; background: var(--teal);
+      color: var(--white); font-size: .65rem; font-weight: 700;
+      padding: .1rem .45rem; border-radius: 10px; min-width: 18px; text-align: center;
+    }
+    .sidebar__footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .btn-signout {
+      display: flex; align-items: center; gap: .65rem;
+      width: 100%; padding: .6rem .75rem;
+      background: none; border: 1px solid rgba(255,255,255,.15);
+      border-radius: 8px; color: rgba(255,255,255,.6);
+      font-family: 'Inter', sans-serif; font-size: .82rem; font-weight: 500;
+      cursor: pointer; transition: background .2s, color .2s;
+    }
+    .btn-signout:hover { background: rgba(255,255,255,.07); color: var(--white); }
+
+    /* ── Main area ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    }
+    .topbar__title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; font-weight: 700; color: var(--ink);
+    }
+    .topbar__sub { font-size: .8rem; color: var(--ink-soft); margin-top: .1rem; }
+    .topbar__right { display: flex; align-items: center; gap: 1rem; }
+    .topbar__time { font-size: .78rem; color: var(--ink-soft); }
+
+    .content { padding: 2rem; flex: 1; }
+
+    /* ── Panels ── */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── Stats row ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem; margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.5rem;
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .stat-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .stat-icon.teal { background: var(--teal-light); color: var(--teal); }
+    .stat-icon.amber { background: #fff8e6; color: #b07d00; }
+    .stat-icon.green { background: #f0faf5; color: var(--success); }
+    .stat-icon.red   { background: var(--error-bg); color: var(--error); }
+    .stat-n {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem; font-weight: 700; color: var(--ink); line-height: 1;
+    }
+    .stat-l { font-size: .78rem; color: var(--ink-soft); margin-top: .25rem; }
+
+    /* ── Section header ── */
+    .section-hd {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.25rem; flex-wrap: wrap; gap: .75rem;
+    }
+    .section-hd h3 {
+      font-size: 1rem; font-weight: 700; color: var(--ink);
+    }
+    .section-hd p { font-size: .8rem; color: var(--ink-soft); margin-top: .1rem; }
+
+    /* ── Search & filter ── */
+    .toolbar {
+      display: flex; align-items: center; gap: .75rem;
+      margin-bottom: 1.25rem; flex-wrap: wrap;
+    }
+    .search-wrap {
+      position: relative; flex: 1; min-width: 200px;
+    }
+    .search-wrap svg {
+      position: absolute; left: .85rem; top: 50%; transform: translateY(-50%);
+      color: var(--ink-soft); pointer-events: none;
+    }
+    .search-wrap input {
+      width: 100%; padding: .6rem .85rem .6rem 2.4rem;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .85rem; color: var(--ink);
+      background: var(--white); outline: none;
+      transition: border-color .2s;
+    }
+    .search-wrap input:focus { border-color: var(--teal); }
+    .filter-select {
+      padding: .6rem .85rem; border: 1.5px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .85rem; color: var(--ink);
+      background: var(--white); outline: none; cursor: pointer;
+      transition: border-color .2s;
+    }
+    .filter-select:focus { border-color: var(--teal); }
+
+    /* ── Table ── */
+    .table-wrap {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: var(--mist); }
+    th {
+      text-align: left; font-size: .72rem; font-weight: 700;
+      color: var(--ink-soft); text-transform: uppercase; letter-spacing: .07em;
+      padding: .85rem 1.1rem; border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: .9rem 1.1rem; font-size: .85rem; color: var(--ink);
+      border-bottom: 1px solid var(--border); vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--mist); }
+    .td-name { font-weight: 600; }
+    .td-email { color: var(--ink-soft); font-size: .8rem; }
+    .td-date { color: var(--ink-soft); font-size: .8rem; white-space: nowrap; }
+
+    /* status badges */
+    .badge {
+      display: inline-flex; align-items: center; gap: .3rem;
+      font-size: .7rem; font-weight: 700; padding: .2rem .65rem;
+      border-radius: 20px; text-transform: uppercase; letter-spacing: .05em;
+      white-space: nowrap;
+    }
+    .badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
+    .badge--pending  { background: #fff8e6; color: #b07d00; }
+    .badge--pending::before { background: #b07d00; }
+    .badge--approved { background: var(--success-bg); color: var(--success); }
+    .badge--approved::before { background: var(--success); }
+    .badge--rejected { background: var(--error-bg); color: var(--error); }
+    .badge--rejected::before { background: var(--error); }
+    .badge--suspended { background: #f4f0ff; color: #5b21b6; }
+    .badge--suspended::before { background: #5b21b6; }
+    .badge--superadmin { background: var(--teal-light); color: var(--teal); }
+    .badge--superadmin::before { background: var(--teal); }
+    .badge--admin { background: #f0faf5; color: var(--success); }
+    .badge--admin::before { background: var(--success); }
+
+    /* action buttons */
+    .actions { display: flex; gap: .4rem; flex-wrap: wrap; }
+    .btn-act {
+      padding: .35rem .75rem; border-radius: 6px;
+      font-family: 'Inter', sans-serif; font-size: .75rem; font-weight: 600;
+      border: none; cursor: pointer; transition: opacity .15s, transform .15s;
+    }
+    .btn-act:hover { opacity: .85; transform: translateY(-1px); }
+    .btn-act:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+    .btn-approve  { background: var(--success-bg); color: var(--success); border: 1px solid #a3d9b8; }
+    .btn-reject   { background: var(--error-bg);   color: var(--error);   border: 1px solid #f5c6c6; }
+    .btn-suspend  { background: #f4f0ff; color: #5b21b6; border: 1px solid #c4b5fd; }
+    .btn-reinstate { background: var(--teal-light); color: var(--teal); border: 1px solid #b3d4ec; }
+    .btn-remove   { background: var(--error-bg);   color: var(--error);   border: 1px solid #f5c6c6; }
+    .btn-view     { background: var(--mist);        color: var(--ink-soft); border: 1px solid var(--border); }
+
+    /* empty state */
+    .empty-state {
+      text-align: center; padding: 4rem 2rem;
+      color: var(--ink-soft); font-size: .9rem;
+    }
+    .empty-state svg { margin: 0 auto 1rem; opacity: .3; }
+    .empty-state p { margin-top: .35rem; font-size: .82rem; }
+
+    /* loading row */
+    .loading-row td { text-align: center; color: var(--ink-soft); font-size: .85rem; padding: 3rem; }
+
+    /* ── Add Admin form ── */
+    .card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 2rem;
+    }
+    .card h4 { font-size: .95rem; font-weight: 700; color: var(--ink); margin-bottom: 1.5rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-note {
+      font-size: .78rem; color: var(--ink-soft); margin-top: .3rem; line-height: 1.5;
+    }
+    .btn-primary {
+      padding: .72rem 1.75rem;
+      background: var(--teal); color: var(--white);
+      font-family: 'Inter', sans-serif; font-size: .875rem; font-weight: 700;
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: background .2s, transform .15s;
+      display: inline-flex; align-items: center; gap: .5rem;
+    }
+    .btn-primary:hover:not(:disabled) { background: var(--teal-dark); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .form-alert {
+      padding: .75rem 1rem; border-radius: 8px;
+      font-size: .82rem; margin-bottom: 1.25rem; display: none;
+    }
+    .form-alert.error { background: var(--error-bg); border: 1px solid #f5c6c6; color: var(--error); display: flex; align-items: center; gap: .5rem; }
+    .form-alert.success { background: var(--success-bg); border: 1px solid #a3d9b8; color: var(--success); display: flex; align-items: center; gap: .5rem; }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,.55); z-index: 999;
+      align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--white); border-radius: 16px;
+      padding: 2rem; max-width: 480px; width: 100%;
+      box-shadow: 0 32px 80px rgba(0,0,0,.3);
+    }
+    .modal h3 { font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: .5rem; }
+    .modal p { font-size: .875rem; color: var(--ink-soft); line-height: 1.65; margin-bottom: 1.5rem; }
+    .modal__actions { display: flex; gap: .75rem; justify-content: flex-end; }
+    .btn-cancel {
+      padding: .6rem 1.25rem;
+      background: var(--mist); color: var(--ink-soft);
+      border: 1px solid var(--border); border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: background .2s;
+    }
+    .btn-cancel:hover { background: var(--border); }
+    .btn-confirm {
+      padding: .6rem 1.25rem; border-radius: 8px;
+      font-family: 'Inter', sans-serif; font-size: .85rem; font-weight: 700;
+      border: none; cursor: pointer; transition: opacity .15s;
+    }
+    .btn-confirm:hover { opacity: .85; }
+    .btn-confirm.approve  { background: var(--success); color: var(--white); }
+    .btn-confirm.reject   { background: var(--error);   color: var(--white); }
+    .btn-confirm.suspend  { background: #5b21b6;         color: var(--white); }
+    .btn-confirm.reinstate { background: var(--teal);   color: var(--white); }
+    .btn-confirm.remove   { background: var(--error);   color: var(--white); }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem;
+      padding: .85rem 1.25rem; border-radius: 10px;
+      font-size: .85rem; font-weight: 600; color: var(--white);
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
+      z-index: 9999; display: none;
+      align-items: center; gap: .5rem;
+      animation: slideUp .3s ease;
+    }
+    .toast.show { display: flex; }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--error); }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { margin-left: 0; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .stats-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="assets/logos/learning-hub-logo.png" alt="The Professional Learning Hub"
+           onerror="this.style.display='none'" />
+      <div class="login-badge">Admin Portal</div>
+    </div>
+    <h2>Administrator Sign In</h2>
+    <p>This area is restricted to authorised administrators only. Unauthorised access attempts are logged.</p>
+
+    <div class="login-alert" id="loginAlert" role="alert"></div>
+
+    <div class="field">
+      <label for="adminEmail">Email Address</label>
+      <input type="email" id="adminEmail" placeholder="admin@tplhub.com" autocomplete="email" />
+    </div>
+    <div class="field">
+      <label for="adminPassword">Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="adminPassword" placeholder="Your password" autocomplete="current-password" />
+        <button class="pw-toggle" type="button" id="loginPwToggle" aria-label="Show password">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn-login" id="loginBtn" type="button">
+      <span class="btn-text">Sign In to Admin Portal</span>
+      <div class="spinner"></div>
+    </button>
+
+    <div class="login-note">
+      🔒 Admin accounts are created by the platform owner only.<br/>
+      If you need access, contact your system administrator.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DASHBOARD
+══════════════════════════════════════════ -->
+<div id="dashboard">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <img src="assets/logos/learning-hub-footer.png" alt="TPLH"
+           onerror="this.src='assets/logos/learning-hub-logo.png'" />
+      <div class="sidebar__badge">Admin Portal</div>
+    </div>
+    <div class="sidebar__admin-info">
+      <div class="sidebar__admin-name" id="sidebarName">Loading…</div>
+      <div class="sidebar__admin-role" id="sidebarRole">—</div>
+    </div>
+    <nav class="sidebar__nav">
+      <div class="sidebar__section-label">Overview</div>
+      <div class="sidebar__link active" data-panel="overview" onclick="switchPanel('overview', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+
+      <div class="sidebar__section-label">Enrolments</div>
+      <div class="sidebar__link" data-panel="pending" onclick="switchPanel('pending', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Pending Requests
+        <span class="sidebar__badge-count" id="pendingCount">0</span>
+      </div>
+      <div class="sidebar__link" data-panel="approved" onclick="switchPanel('approved', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Approved Students
+      </div>
+      <div class="sidebar__link" data-panel="rejected" onclick="switchPanel('rejected', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        Rejected
+      </div>
+      <div class="sidebar__link" data-panel="suspended" onclick="switchPanel('suspended', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+        Suspended
+      </div>
+
+      <div class="sidebar__section-label">Learning</div>
+      <div class="sidebar__link" data-panel="materials" onclick="switchPanel('materials', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Study Materials
+      </div>
+      <div class="sidebar__link" data-panel="assessments" onclick="switchPanel('assessments', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Assessments &amp; Exams
+      </div>
+
+      <div class="sidebar__section-label" id="adminMgmtLabel" style="display:none">Administration</div>
+      <div class="sidebar__link" data-panel="admins" id="adminMgmtLink" style="display:none" onclick="switchPanel('admins', this)">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Manage Admins
+      </div>
+    </nav>
+    <div class="sidebar__footer">
+      <button class="btn-signout" onclick="signOutAdmin()">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar__title" id="topbarTitle">Dashboard</div>
+        <div class="topbar__sub" id="topbarSub">Welcome back</div>
+      </div>
+      <div class="topbar__right">
+        <div class="topbar__time" id="topbarTime"></div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ── OVERVIEW ── -->
+      <div class="panel active" id="panel-overview">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon teal">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div><div class="stat-n" id="statTotal">—</div><div class="stat-l">Total Applications</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon amber">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div><div class="stat-n" id="statPending">—</div><div class="stat-l">Pending Review</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div><div class="stat-n" id="statApproved">—</div><div class="stat-l">Active Students</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </div>
+            <div><div class="stat-n" id="statRejected">—</div><div class="stat-l">Rejected</div></div>
+          </div>
+        </div>
+
+        <div class="section-hd">
+          <div>
+            <h3>Recent Applications</h3>
+            <p>The 10 most recent enrolment requests</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Programme</th>
+                <th>Applied</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="overviewTable">
+              <tr class="loading-row"><td colspan="5">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── PENDING ── -->
+      <div class="panel" id="panel-pending">
+        <div class="section-hd">
+          <div><h3>Pending Enrolment Requests</h3><p>Review and approve or reject each application</p></div>
+        </div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search by name or email…" oninput="filterTable('pendingTable', this.value)" />
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Student</th><th>Programme</th><th>Phone</th><th>Applied</th><th>Email Verified</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="pendingTable">
+              <tr class="loading-row"><td colspan="6">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── APPROVED ── -->
+      <div class="panel" id="panel-approved">
+        <div class="section-hd">
+          <div><h3>Approved Students</h3><p>All currently active students</p></div>
+        </div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search by name or email…" oninput="filterTable('approvedTable', this.value)" />
+          </div>
+          <select class="filter-select" onchange="filterByProgramme('approvedTable', this.value)">
+            <option value="">All Programmes</option>
+            <optgroup label="CIML Business School">
+              <option value="diploma-program">Diploma Program</option>
+              <option value="advanced-diploma">Advanced Diploma</option>
+              <option value="postgraduate-diploma">Post Graduate Diploma</option>
+              <option value="mba">MBA</option>
+              <option value="dba">DBA</option>
+              <option value="spec-business-management">Business Management</option>
+              <option value="spec-strategic-leadership">Strategic Management & Leadership</option>
+              <option value="spec-finance-accounting">Finance & Accounting</option>
+              <option value="spec-marketing">Marketing & Consumer Strategy</option>
+              <option value="spec-human-resources">Human Resource Management</option>
+              <option value="spec-international-business">International Business</option>
+              <option value="spec-healthcare-management">Healthcare Management</option>
+              <option value="spec-project-innovation">Project & Innovation Management</option>
+              <option value="spec-oil-gas">Oil & Gas Management</option>
+              <option value="spec-cybersecurity">Cybersecurity & Digital Business</option>
+              <option value="spec-aviation">Aviation & Transport Management</option>
+              <option value="spec-real-estate">Real Estate & Property Development</option>
+            </optgroup>
+            <optgroup label="CILG Qualifications">
+              <option value="cilg-level1">Level 1 — Foundation Certificate</option>
+              <option value="cilg-level2">Level 2 — Diploma</option>
+              <option value="cilg-level3">Level 3 — Advanced Diploma (ACILG)</option>
+              <option value="cilg-level4">Level 4 — Executive Diploma (MCILG)</option>
+              <option value="cilg-level5">Level 5 — Chartered Professional (FCILG)</option>
+            </optgroup>
+            <optgroup label="CILG Certifications">
+              <option value="caigp">CAIGP</option>
+              <option value="chrm">CHRM</option>
+              <option value="csol">CSOL</option>
+              <option value="cpage">CPAGE</option>
+              <option value="cpm">CPM</option>
+              <option value="clgp">CLGP</option>
+              <option value="ccrm">CCRM</option>
+              <option value="ceem">CEEM</option>
+              <option value="cdgp">CDGP</option>
+              <option value="csmp">CSMP</option>
+              <option value="cppm">CPPM</option>
+              <option value="cethm">CETHM</option>
+              <option value="cdtl">CDTL</option>
+              <option value="ccsp">CCSP</option>
+              <option value="cnlp">CNLP</option>
+              <option value="cwlp">CWLP</option>
+            </optgroup>
+            <optgroup label="CIET">
+              <option value="ciet-professional-cert">Professional Certification</option>
+              <option value="ciet-membership">Membership</option>
+              <option value="ciet-qualification">Qualification Pathway</option>
+            </optgroup>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Student</th><th>Programme</th><th>Approved</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="approvedTable">
+              <tr class="loading-row"><td colspan="4">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── REJECTED ── -->
+      <div class="panel" id="panel-rejected">
+        <div class="section-hd">
+          <div><h3>Rejected Applications</h3><p>Applications that were declined</p></div>
+        </div>
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search…" oninput="filterTable('rejectedTable', this.value)" />
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Student</th><th>Programme</th><th>Rejected</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="rejectedTable">
+              <tr class="loading-row"><td colspan="4">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── SUSPENDED ── -->
+      <div class="panel" id="panel-suspended">
+        <div class="section-hd">
+          <div><h3>Suspended Accounts</h3><p>Students whose access has been temporarily removed</p></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Student</th><th>Programme</th><th>Suspended</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="suspendedTable">
+              <tr class="loading-row"><td colspan="4">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── STUDY MATERIALS ── -->
+      <div class="panel" id="panel-materials">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <h4>Upload Study Material</h4>
+          <p style="font-size:.82rem;color:var(--ink-soft);margin-bottom:1.25rem;line-height:1.6;">
+            Upload a PDF and assign it to a programme. Only students enrolled in that programme will see it on their dashboard.
+          </p>
+          <div class="form-alert" id="materialFormAlert"></div>
+          <div class="field" style="margin-bottom:1rem;">
+            <label>Material Title</label>
+            <input type="text" id="newMaterialTitle" placeholder="e.g. Module 1 — Introduction to International Trade" />
+          </div>
+          <div class="field" style="margin-bottom:1rem;">
+            <label>Programme</label>
+            <select id="newMaterialProgramme" class="filter-select" style="width:100%;">
+              <option value="">Select a programme…</option>
+              <option value="diploma-program">Diploma Program</option>
+              <option value="advanced-diploma">Advanced Diploma Program</option>
+              <option value="postgraduate-diploma">Post Graduate Diploma</option>
+              <option value="mba">Master of Business Administration (MBA)</option>
+              <option value="dba">Doctor of Business Administration (DBA)</option>
+              <option value="spec-business-management">Business Management</option>
+              <option value="spec-strategic-leadership">Strategic Management & Leadership</option>
+              <option value="spec-finance-accounting">Finance & Accounting</option>
+              <option value="spec-marketing">Marketing & Consumer Strategy</option>
+              <option value="spec-human-resources">Human Resource Management</option>
+              <option value="spec-international-business">International Business</option>
+              <option value="spec-healthcare-management">Healthcare Management</option>
+              <option value="spec-project-innovation">Project & Innovation Management</option>
+              <option value="spec-oil-gas">Oil & Gas Management</option>
+              <option value="spec-cybersecurity">Cybersecurity & Digital Business</option>
+              <option value="spec-aviation">Aviation & Transport Management</option>
+              <option value="spec-real-estate">Real Estate & Property Development</option>
+              <option value="cilg-level1">Level 1 — Foundation Certificate in Leadership & Governance</option>
+              <option value="cilg-level2">Level 2 — Diploma in Leadership & Governance</option>
+              <option value="cilg-level3">Level 3 — Advanced Diploma in Leadership & Governance (ACILG)</option>
+              <option value="cilg-level4">Level 4 — Executive Diploma in Leadership & Governance (MCILG)</option>
+              <option value="cilg-level5">Level 5 — Chartered Professional in Leadership & Governance (FCILG)</option>
+              <option value="caigp">CAIGP — Certified AI Governance Professional</option>
+              <option value="chrm">CHRM — Certified Human Resource Manager</option>
+              <option value="csol">CSOL — Certified Strategic Organisational Leadership</option>
+              <option value="cpage">CPAGE — Certified Public Administration & Governance Expert</option>
+              <option value="cpm">CPM — Certified Project Manager</option>
+              <option value="clgp">CLGP — Certified Leadership Governance Professional</option>
+              <option value="ccrm">CCRM — Certified Corporate Risk Manager</option>
+              <option value="ceem">CEEM — Certified ESG & Environmental Manager</option>
+              <option value="cdgp">CDGP — Certified Data Governance Professional</option>
+              <option value="csmp">CSMP — Certified Strategy & Management Professional</option>
+              <option value="cppm">CPPM — Certified Policy & Public Management Professional</option>
+              <option value="cethm">CETHM — Certified Ethics & Compliance Professional</option>
+              <option value="cdtl">CDTL — Certified Digital Transformation Leader</option>
+              <option value="ccsp">CCSP — Certified Change & Strategy Professional</option>
+              <option value="cnlp">CNLP — Certified Non-Profit Leadership Professional</option>
+              <option value="cwlp">CWLP — Certified Women in Leadership Professional</option>
+              <option value="ciet-professional-cert">Professional Certification (CIET)</option>
+              <option value="ciet-membership">Membership (CIET)</option>
+              <option value="ciet-qualification">Qualification Pathway (CIET)</option>
+              <option value="other">Other / Not Yet Decided</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:1.25rem;">
+            <label>PDF File</label>
+            <input type="file" id="newMaterialFile" accept="application/pdf" />
+            <div class="form-note">PDF only. Large files may take a moment to upload.</div>
+          </div>
+          <button class="btn-primary" id="uploadMaterialBtn" onclick="uploadMaterial()">
+            Upload Material
+          </button>
+          <div id="uploadProgressWrap" style="display:none;margin-top:1rem;">
+            <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+              <div id="uploadProgressBar" style="height:100%;width:0%;background:var(--teal);transition:width .2s;"></div>
+            </div>
+            <div style="font-size:.75rem;color:var(--ink-soft);margin-top:.4rem;" id="uploadProgressLabel">Uploading… 0%</div>
+          </div>
+        </div>
+
+        <div class="section-hd">
+          <div><h3>Uploaded Materials</h3><p>All study materials currently available to students</p></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Title</th><th>Programme</th><th>Pages</th><th>Uploaded</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="materialsTable">
+              <tr class="loading-row"><td colspan="5">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── ASSESSMENTS & EXAM LINKS ── -->
+      <div class="panel" id="panel-assessments">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <h4>Post an Assessment or Exam Link</h4>
+          <p style="font-size:.82rem;color:var(--ink-soft);margin-bottom:1.25rem;line-height:1.6;">
+            Paste a link (Google Form, exam portal, survey, etc.) and assign it to a programme. Students in that programme will see it on their dashboard.
+          </p>
+          <div class="form-alert" id="assessFormAlert"></div>
+          <div class="field" style="margin-bottom:1rem;">
+            <label>Title</label>
+            <input type="text" id="newAssessTitle" placeholder="e.g. Mid-Term Examination — Module 3" />
+          </div>
+          <div class="form-row" style="margin-bottom:1rem;">
+            <div class="field" style="margin-bottom:0">
+              <label>Programme</label>
+              <select id="newAssessProgramme" class="filter-select" style="width:100%;">
+                <option value="">Select a programme…</option>
+                <option value="diploma-program">Diploma Program</option>
+                <option value="advanced-diploma">Advanced Diploma Program</option>
+                <option value="postgraduate-diploma">Post Graduate Diploma</option>
+                <option value="mba">MBA</option>
+                <option value="dba">DBA</option>
+                <option value="spec-business-management">Business Management</option>
+                <option value="spec-strategic-leadership">Strategic Management &amp; Leadership</option>
+                <option value="spec-finance-accounting">Finance &amp; Accounting</option>
+                <option value="spec-marketing">Marketing &amp; Consumer Strategy</option>
+                <option value="spec-human-resources">Human Resource Management</option>
+                <option value="spec-international-business">International Business</option>
+                <option value="spec-healthcare-management">Healthcare Management</option>
+                <option value="spec-project-innovation">Project &amp; Innovation Management</option>
+                <option value="spec-oil-gas">Oil &amp; Gas Management</option>
+                <option value="spec-cybersecurity">Cybersecurity &amp; Digital Business</option>
+                <option value="spec-aviation">Aviation &amp; Transport Management</option>
+                <option value="spec-real-estate">Real Estate &amp; Property Development</option>
+                <option value="cilg-level1">Level 1 — Foundation Certificate</option>
+                <option value="cilg-level2">Level 2 — Diploma</option>
+                <option value="cilg-level3">Level 3 — Advanced Diploma (ACILG)</option>
+                <option value="cilg-level4">Level 4 — Executive Diploma (MCILG)</option>
+                <option value="cilg-level5">Level 5 — Chartered Professional (FCILG)</option>
+                <option value="all">All Programmes</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Type</label>
+              <select id="newAssessType" class="filter-select" style="width:100%;">
+                <option value="assessment">Assessment</option>
+                <option value="assignment">Assignment</option>
+                <option value="exam">Exam</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:1rem;">
+            <label>Link (URL)</label>
+            <input type="url" id="newAssessLink" placeholder="https://forms.google.com/…" />
+            <div class="form-note">Paste a Google Form, exam portal, or any web link students should visit.</div>
+          </div>
+          <div class="field" style="margin-bottom:1rem;">
+            <label>Deadline (optional)</label>
+            <input type="date" id="newAssessDeadline" />
+          </div>
+          <div class="field" style="margin-bottom:1.25rem;">
+            <label>Description / Instructions (optional)</label>
+            <textarea id="newAssessDesc" rows="3" style="width:100%;padding:.72rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-family:inherit;font-size:.875rem;color:var(--ink);background:var(--mist);outline:none;resize:vertical;" placeholder="Any extra instructions for students…"></textarea>
+          </div>
+          <button class="btn-primary" id="postAssessBtn" onclick="postAssessment()">
+            Post Assessment / Exam Link
+          </button>
+        </div>
+
+        <div class="section-hd">
+          <div><h3>Posted Assessments &amp; Exam Links</h3><p>All active links visible to students</p></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Title</th><th>Programme</th><th>Type</th><th>Deadline</th><th>Posted</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="assessmentsTable">
+              <tr class="loading-row"><td colspan="6">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── MANAGE ADMINS (superadmin only) ── -->
+      <div class="panel" id="panel-admins">
+        <div class="card" style="margin-bottom:1.5rem;">
+          <h4>Add a New Administrator</h4>
+          <p style="font-size:.82rem;color:var(--ink-soft);margin-bottom:1.25rem;line-height:1.6;">
+            New admin accounts must first be created in Firebase Console (Authentication → Add user), then registered here. They will log in using the email and password you set for them there.
+          </p>
+          <div class="form-alert" id="adminFormAlert"></div>
+          <div class="form-row" style="margin-bottom:1rem;">
+            <div class="field" style="margin-bottom:0">
+              <label>Full Name</label>
+              <input type="text" id="newAdminName" placeholder="Full name" />
+            </div>
+            <div class="field" style="margin-bottom:0">
+              <label>Email Address</label>
+              <input type="email" id="newAdminEmail" placeholder="admin@tplhub.com" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:1rem;">
+            <label>Role</label>
+            <select id="newAdminRole" class="filter-select" style="width:100%;">
+              <option value="admin">Admin — can approve/reject/suspend students</option>
+              <option value="superadmin">Super Admin — full access including admin management</option>
+            </select>
+            <div class="form-note">⚠️ Only grant Super Admin to trusted team leads.</div>
+          </div>
+          <button class="btn-primary" id="addAdminBtn" onclick="addAdmin()">
+            Add Administrator
+          </button>
+        </div>
+
+        <div class="section-hd">
+          <div><h3>Current Administrators</h3><p>All admin accounts on this platform</p></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Role</th><th>Added</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="adminsTable">
+              <tr class="loading-row"><td colspan="5">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /dashboard -->
+
+<!-- ══════════════════════════════════════════
+     CONFIRMATION MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modalTitle">Confirm Action</h3>
+    <p id="modalBody">Are you sure?</p>
+    <div class="modal__actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-confirm" id="modalConfirm">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     FIREBASE + LOGIC
+══════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp }          from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+                                  from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, deleteDoc,
+         updateDoc, query, where, orderBy, serverTimestamp, limit }
+                                  from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+// ── Config ────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyB05KazE7SqBjZQGPXGVdC7QVtrZjLRazU",
+  authDomain:        "learning-hub-bf93c.firebaseapp.com",
+  projectId:         "learning-hub-bf93c",
+  storageBucket:     "learning-hub-bf93c.firebasestorage.app",
+  messagingSenderId: "317680009277",
+  appId:             "1:317680009277:web:21344fbe84b1f07bf9ea54",
+};
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// ── Cloudinary config (free file storage, no card required) ─────────
+// 1. Sign up at https://cloudinary.com (free tier: 25GB storage + 25GB bandwidth/mo)
+// 2. Find your "Cloud name" on the Dashboard home page
+// 3. Settings → Upload → Upload presets → Add upload preset
+//    - Set "Signing Mode" to "Unsigned"
+//    - (Optional) Restrict allowed formats to "pdf"
+// 4. Paste both values below
+const CLOUDINARY_CLOUD_NAME    = "dbylyboq0";
+const CLOUDINARY_UPLOAD_PRESET = "materials_unsigned";
+
+// ── State ─────────────────────────────────────────────
+let currentAdmin    = null; // { uid, name, email, role }
+let allStudents      = [];  // cached from Firestore
+let dashboardLoaded  = false; // only run the full check-and-load flow once per session
+
+// ── Auth gate: only render dashboard if admin ─────────
+// NOTE: onAuthStateChanged fires more than once per page life — on initial
+// login, on tab focus, and on silent ID-token refresh (roughly hourly). We
+// must NOT redo the Firestore admin lookup (and never sign the user out)
+// every time it re-fires — only the first time we see a real user.
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    dashboardLoaded = false;
+    showLogin();
+    return;
+  }
+
+  if (dashboardLoaded) {
+    // Just a token refresh / tab-focus re-fire. Nothing to do.
+    return;
+  }
+
+  // Always keep dashboard hidden until admin check fully passes
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('dashboard').style.display   = 'none';
+
+  // Retry loop: try up to 3 times with 1.5 s gap before giving up.
+  // This handles the common case where Firestore is slow on first load
+  // or the tab was backgrounded and the first read times out.
+  let lastErr = null;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const adminDoc = await getDoc(doc(db, 'admins', user.uid));
+
+      if (!adminDoc.exists()) {
+        await signOut(auth);
+        showLogin('Access denied. You are not an authorised administrator.');
+        return;
+      }
+
+      const data = adminDoc.data();
+
+      if (data.role !== 'admin' && data.role !== 'superadmin') {
+        await signOut(auth);
+        showLogin('Access denied. Invalid administrator role.');
+        return;
+      }
+
+      currentAdmin    = { uid: user.uid, ...data };
+      dashboardLoaded = true;
+      showDashboard();
+      return; // success — exit the loop
+
+    } catch (err) {
+      lastErr = err;
+      console.warn(`Admin verification attempt ${attempt} failed:`, err.code || err.message);
+      if (attempt < 3) {
+        // Brief wait before retry
+        await new Promise(r => setTimeout(r, 1500));
+      }
+    }
+  }
+
+  // All 3 attempts failed. Show a "try again" message but DO NOT sign the user out —
+  // they are authenticated, we just couldn't reach Firestore right now.
+  console.error('Admin verification failed after 3 attempts:', lastErr);
+  showLogin('Network error — could not reach the server. Please try logging in again.');
+});
+
+// ── Login ─────────────────────────────────────────────
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email    = document.getElementById('adminEmail').value.trim();
+  const password = document.getElementById('adminPassword').value;
+  const alert    = document.getElementById('loginAlert');
+  const btn      = document.getElementById('loginBtn');
+
+  if (!email || !password) {
+    alert.textContent = 'Please enter your email and password.';
+    alert.classList.add('show'); return;
+  }
+  alert.classList.remove('show');
+  btn.classList.add('loading'); btn.disabled = true;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    // onAuthStateChanged handles the rest
+  } catch (err) {
+    btn.classList.remove('loading'); btn.disabled = false;
+    let msg = 'Sign in failed. Please try again.';
+    if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
+      msg = 'Incorrect email or password.';
+    } else if (err.code === 'auth/too-many-requests') {
+      msg = 'Too many failed attempts. Please wait a few minutes.';
+    }
+    alert.textContent = msg;
+    alert.classList.add('show');
+  }
+});
+
+// Enter key on login
+['adminEmail','adminPassword'].forEach(id => {
+  document.getElementById(id).addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('loginBtn').click();
+  });
+});
+
+// Password toggle
+document.getElementById('loginPwToggle').addEventListener('click', () => {
+  const inp = document.getElementById('adminPassword');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+
+// ── Show / hide screens ───────────────────────────────
+function showLogin(errMsg) {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('dashboard').style.display   = 'none';
+  document.getElementById('loginBtn').classList.remove('loading');
+  document.getElementById('loginBtn').disabled = false;
+  if (errMsg) {
+    const al = document.getElementById('loginAlert');
+    al.textContent = errMsg; al.classList.add('show');
+  }
+}
+
+function showDashboard() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('dashboard').style.display   = 'block';
+
+  // Fill admin info
+  document.getElementById('sidebarName').textContent = currentAdmin.name || currentAdmin.email;
+  document.getElementById('sidebarRole').textContent =
+    currentAdmin.role === 'superadmin' ? 'Super Administrator' : 'Administrator';
+
+  // Show admin management only to superadmins
+  if (currentAdmin.role === 'superadmin') {
+    document.getElementById('adminMgmtLabel').style.display = '';
+    document.getElementById('adminMgmtLink').style.display  = '';
+  }
+
+  // Live clock
+  setInterval(() => {
+    document.getElementById('topbarTime').textContent =
+      new Date().toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+  }, 1000);
+
+  loadAllData();
+}
+
+// ── Sign out ──────────────────────────────────────────
+window.signOutAdmin = async () => {
+  await signOut(auth);
+  currentAdmin = null;
+  allStudents  = [];
+  showLogin();
+};
+
+// ── Load all students from Firestore ─────────────────
+async function loadAllData() {
+  try {
+    const snap = await getDocs(query(collection(db, 'students'), orderBy('createdAt', 'desc')));
+    allStudents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderAll();
+    updateStats();
+    updatePendingBadge();
+  } catch (e) {
+    console.error('Failed to load students:', e);
+    showToast('Failed to load student data. Check Firestore rules.', 'error');
+  }
+  loadMaterials();
+  loadAssessments();
+}
+
+function renderAll() {
+  renderOverview();
+  renderTable('pendingTable',  allStudents.filter(s => s.status === 'pending'),   renderPendingRow);
+  renderTable('approvedTable', allStudents.filter(s => s.status === 'approved'),  renderApprovedRow);
+  renderTable('rejectedTable', allStudents.filter(s => s.status === 'rejected'),  renderRejectedRow);
+  renderTable('suspendedTable',allStudents.filter(s => s.status === 'suspended'), renderSuspendedRow);
+  if (currentAdmin.role === 'superadmin') loadAdmins();
+}
+
+function updateStats() {
+  const total    = allStudents.length;
+  const pending  = allStudents.filter(s => s.status === 'pending').length;
+  const approved = allStudents.filter(s => s.status === 'approved').length;
+  const rejected = allStudents.filter(s => s.status === 'rejected').length;
+  document.getElementById('statTotal').textContent    = total;
+  document.getElementById('statPending').textContent  = pending;
+  document.getElementById('statApproved').textContent = approved;
+  document.getElementById('statRejected').textContent = rejected;
+}
+
+function updatePendingBadge() {
+  const n = allStudents.filter(s => s.status === 'pending').length;
+  document.getElementById('pendingCount').textContent = n;
+}
+
+// ── Render helpers ────────────────────────────────────
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+function programmeName(val) {
+  const map = {
+    'financial-compliance':   'Financial Compliance',
+    'project-management':     'Project Management',
+    'business-administration':'Business Administration',
+    'human-resources':        'Human Resources',
+    'digital-marketing':      'Digital Marketing',
+    'data-analysis':          'Data Analysis',
+    'accounting-finance':     'Accounting & Finance',
+    'leadership-management':  'Leadership & Management',
+    'other':                  'Other',
+  };
+  return map[val] || val || '—';
+}
+
+function renderTable(tbodyId, rows, rowFn) {
+  const tbody = document.getElementById(tbodyId);
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="10">
+      <div class="empty-state">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <strong>Nothing here</strong>
+        <p>No records to display in this category.</p>
+      </div>
+    </td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(rowFn).join('');
+}
+
+function renderOverview() {
+  const rows = allStudents.slice(0, 10);
+  const tbody = document.getElementById('overviewTable');
+  if (!rows.length) { tbody.innerHTML = '<tr class="loading-row"><td colspan="5">No applications yet.</td></tr>'; return; }
+  tbody.innerHTML = rows.map(s => `
+    <tr data-name="${(s.fullName||'').toLowerCase()}" data-email="${(s.email||'').toLowerCase()}">
+      <td><div class="td-name">${s.fullName || '—'}</div><div class="td-email">${s.email}</div></td>
+      <td>${programmeName(s.programme)}</td>
+      <td class="td-date">${fmtDate(s.createdAt)}</td>
+      <td><span class="badge badge--${s.status}">${s.status}</span></td>
+      <td>
+        ${s.status === 'pending' ? `
+          <div class="actions">
+            <button class="btn-act btn-approve" onclick="confirmAction('approve','${s.id}','${s.fullName}')">Approve</button>
+            <button class="btn-act btn-reject"  onclick="confirmAction('reject','${s.id}','${s.fullName}')">Reject</button>
+          </div>` : '<span style="color:var(--ink-soft);font-size:.8rem;">—</span>'}
+      </td>
+    </tr>`).join('');
+}
+
+function renderPendingRow(s) {
+  const verified = s.emailVerified ? '✅ Yes' : '⏳ No';
+  return `<tr data-name="${(s.fullName||'').toLowerCase()}" data-email="${(s.email||'').toLowerCase()}">
+    <td><div class="td-name">${s.fullName || '—'}</div><div class="td-email">${s.email}</div></td>
+    <td>${programmeName(s.programme)}</td>
+    <td>${s.phone || '—'}</td>
+    <td class="td-date">${fmtDate(s.createdAt)}</td>
+    <td>${verified}</td>
+    <td><div class="actions">
+      <button class="btn-act btn-approve" onclick="confirmAction('approve','${s.id}','${s.fullName}')">Approve</button>
+      <button class="btn-act btn-reject"  onclick="confirmAction('reject','${s.id}','${s.fullName}')">Reject</button>
+    </div></td>
+  </tr>`;
+}
+
+function renderApprovedRow(s) {
+  return `<tr data-name="${(s.fullName||'').toLowerCase()}" data-email="${(s.email||'').toLowerCase()}" data-programme="${s.programme||''}">
+    <td><div class="td-name">${s.fullName || '—'}</div><div class="td-email">${s.email}</div></td>
+    <td>${programmeName(s.programme)}</td>
+    <td class="td-date">${fmtDate(s.approvedAt)}</td>
+    <td><div class="actions">
+      <button class="btn-act btn-suspend" onclick="confirmAction('suspend','${s.id}','${s.fullName}')">Suspend</button>
+    </div></td>
+  </tr>`;
+}
+
+function renderRejectedRow(s) {
+  return `<tr data-name="${(s.fullName||'').toLowerCase()}" data-email="${(s.email||'').toLowerCase()}">
+    <td><div class="td-name">${s.fullName || '—'}</div><div class="td-email">${s.email}</div></td>
+    <td>${programmeName(s.programme)}</td>
+    <td class="td-date">${fmtDate(s.updatedAt)}</td>
+    <td><div class="actions">
+      <button class="btn-act btn-approve" onclick="confirmAction('approve','${s.id}','${s.fullName}')">Approve Instead</button>
+    </div></td>
+  </tr>`;
+}
+
+function renderSuspendedRow(s) {
+  return `<tr>
+    <td><div class="td-name">${s.fullName || '—'}</div><div class="td-email">${s.email}</div></td>
+    <td>${programmeName(s.programme)}</td>
+    <td class="td-date">${fmtDate(s.updatedAt)}</td>
+    <td><div class="actions">
+      <button class="btn-act btn-reinstate" onclick="confirmAction('reinstate','${s.id}','${s.fullName}')">Reinstate</button>
+      <button class="btn-act btn-reject"    onclick="confirmAction('reject','${s.id}','${s.fullName}')">Reject</button>
+    </div></td>
+  </tr>`;
+}
+
+// ── Admin management ──────────────────────────────────
+async function loadAdmins() {
+  const tbody = document.getElementById('adminsTable');
+  try {
+    const snap = await getDocs(collection(db, 'admins'));
+    const admins = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (!admins.length) {
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="5">No admins found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = admins.map(a => `
+      <tr>
+        <td class="td-name">${a.name || '—'}</td>
+        <td class="td-email">${a.email}</td>
+        <td><span class="badge badge--${a.role}">${a.role === 'superadmin' ? 'Super Admin' : 'Admin'}</span></td>
+        <td class="td-date">${fmtDate(a.createdAt)}</td>
+        <td>
+          ${a.id !== currentAdmin.uid ?
+            `<button class="btn-act btn-remove" onclick="confirmAction('removeAdmin','${a.id}','${a.name || a.email}')">Remove</button>` :
+            `<span style="font-size:.75rem;color:var(--ink-soft);">You</span>`
+          }
+        </td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="5">Failed to load admins.</td></tr>';
+  }
+}
+
+window.addAdmin = async () => {
+  const name  = document.getElementById('newAdminName').value.trim();
+  const email = document.getElementById('newAdminEmail').value.trim();
+  const role  = document.getElementById('newAdminRole').value;
+  const alert = document.getElementById('adminFormAlert');
+  const btn   = document.getElementById('addAdminBtn');
+
+  // Only superadmins can add admins
+  if (currentAdmin.role !== 'superadmin') {
+    showAlert(alert, 'error', 'Only Super Admins can add new administrators.'); return;
+  }
+  if (!name || !email) {
+    showAlert(alert, 'error', 'Please enter a name and email address.'); return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showAlert(alert, 'error', 'Please enter a valid email address.'); return;
+  }
+
+  btn.disabled = true; btn.textContent = 'Adding…';
+  alert.style.display = 'none';
+
+  try {
+    // Find the user UID by email — admin must already exist in Firebase Auth
+    // We store by email as the lookup key since we can't search Auth by email from client
+    // Instead: store a pending record; admin logs in and their doc is created then
+    // Best practice: store doc keyed by email, matched on first login
+    const emailKey = email.toLowerCase().replace(/[.@]/g, '_');
+    await setDoc(doc(db, 'adminInvites', emailKey), {
+      name, email, role,
+      invitedBy: currentAdmin.uid,
+      invitedAt: serverTimestamp(),
+    });
+    showAlert(alert, 'success', `✅ ${name} has been added. They can now log in with the credentials you set in Firebase Console.`);
+    document.getElementById('newAdminName').value = '';
+    document.getElementById('newAdminEmail').value = '';
+    loadAdmins();
+  } catch(e) {
+    showAlert(alert, 'error', 'Failed to add admin. Check your permissions.');
+  }
+  btn.disabled = false; btn.textContent = 'Add Administrator';
+};
+
+// ── Confirm modal ─────────────────────────────────────
+let pendingAction = null;
+
+window.confirmAction = (action, studentId, name) => {
+  pendingAction = { action, studentId, name };
+  const modal   = document.getElementById('modal');
+  const title   = document.getElementById('modalTitle');
+  const body    = document.getElementById('modalBody');
+  const confirm = document.getElementById('modalConfirm');
+
+  confirm.className = 'btn-confirm';
+  const cfg = {
+    approve:     { title:'Approve Application',   body:`Approve <strong>${name}</strong>? They will gain access to the platform.`,    cls:'approve',   label:'Approve'   },
+    reject:      { title:'Reject Application',    body:`Reject <strong>${name}</strong>? Their access will be denied.`,               cls:'reject',    label:'Reject'    },
+    suspend:     { title:'Suspend Student',       body:`Suspend <strong>${name}</strong>? Their login will be blocked immediately.`,  cls:'suspend',   label:'Suspend'   },
+    reinstate:   { title:'Reinstate Student',     body:`Reinstate <strong>${name}</strong>? They will regain full access.`,          cls:'reinstate', label:'Reinstate' },
+    removeAdmin: { title:'Remove Administrator',  body:`Remove <strong>${name}</strong> as an admin? This cannot be undone.`,        cls:'remove',    label:'Remove'    },
+  };
+  const c = cfg[action];
+  title.textContent = c.title;
+  body.innerHTML    = c.body;
+  confirm.classList.add(c.cls);
+  confirm.textContent = c.label;
+  modal.classList.add('show');
+};
+
+window.closeModal = () => {
+  document.getElementById('modal').classList.remove('show');
+  pendingAction = null;
+};
+
+document.getElementById('modalConfirm').addEventListener('click', async () => {
+  if (!pendingAction) return;
+  const { action, studentId, name } = pendingAction;
+  closeModal();
+
+  const statusMap = {
+    approve:   'approved',
+    reject:    'rejected',
+    suspend:   'suspended',
+    reinstate: 'approved',
+  };
+
+  try {
+    if (action === 'removeAdmin') {
+      const emailKey = studentId; // in this case studentId holds the doc id
+      await updateDoc(doc(db, 'adminInvites', emailKey), { removed: true, removedBy: currentAdmin.uid });
+      showToast(`${name} removed as admin.`, 'success');
+      loadAdmins(); return;
+    }
+
+    const newStatus = statusMap[action];
+    const updateData = {
+      status:    newStatus,
+      updatedAt: serverTimestamp(),
+      updatedBy: currentAdmin.uid,
+    };
+    if (action === 'approve' || action === 'reinstate') {
+      updateData.approvedAt = serverTimestamp();
+      updateData.approvedBy = currentAdmin.uid;
+    }
+
+    await updateDoc(doc(db, 'students', studentId), updateData);
+
+    // Update local cache
+    const idx = allStudents.findIndex(s => s.id === studentId);
+    if (idx > -1) allStudents[idx] = { ...allStudents[idx], status: newStatus };
+
+    renderAll();
+    updateStats();
+    updatePendingBadge();
+
+    const msgs = {
+      approve:   `✅ ${name} has been approved.`,
+      reject:    `${name} has been rejected.`,
+      suspend:   `${name} has been suspended.`,
+      reinstate: `✅ ${name} has been reinstated.`,
+    };
+    showToast(msgs[action], action === 'reject' || action === 'suspend' ? 'error' : 'success');
+
+  } catch(e) {
+    console.error(e);
+    showToast('Action failed. Please try again.', 'error');
+  }
+});
+
+// Close modal on overlay click
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+// ── Panel switching ───────────────────────────────────
+window.switchPanel = (panelId, el) => {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar__link').forEach(l => l.classList.remove('active'));
+  document.getElementById('panel-' + panelId).classList.add('active');
+  el.classList.add('active');
+
+  const titles = {
+    overview:    ['Dashboard',             'Platform overview and recent activity'],
+    pending:     ['Pending Requests',      'Applications awaiting your review'],
+    approved:    ['Approved Students',     'All active enrolled students'],
+    rejected:    ['Rejected Applications', 'Declined enrolment requests'],
+    suspended:   ['Suspended Accounts',    'Students with blocked access'],
+    materials:   ['Study Materials',       'Upload and manage reading materials for students'],
+    assessments: ['Assessments & Exams',   'Post assessment and examination links for students'],
+    admins:      ['Manage Administrators', 'Add or remove admin accounts'],
+  };
+  const [title, sub] = titles[panelId] || ['—', '—'];
+  document.getElementById('topbarTitle').textContent = title;
+  document.getElementById('topbarSub').textContent   = sub;
+};
+
+// ── Search filter ─────────────────────────────────────
+window.filterTable = (tbodyId, query) => {
+  const q = query.toLowerCase();
+  document.querySelectorAll(`#${tbodyId} tr`).forEach(row => {
+    const name  = row.dataset.name  || '';
+    const email = row.dataset.email || '';
+    row.style.display = (name.includes(q) || email.includes(q)) ? '' : 'none';
+  });
+};
+
+window.filterByProgramme = (tbodyId, val) => {
+  document.querySelectorAll(`#${tbodyId} tr`).forEach(row => {
+    row.style.display = (!val || row.dataset.programme === val) ? '' : 'none';
+  });
+};
+
+// ══════════════════════════════════════════
+//  STUDY MATERIALS — Upload, List, Delete
+// ══════════════════════════════════════════
+
+window.uploadMaterial = async () => {
+  const title     = document.getElementById('newMaterialTitle').value.trim();
+  const programme = document.getElementById('newMaterialProgramme').value;
+  const fileInput = document.getElementById('newMaterialFile');
+  const file      = fileInput.files[0];
+  const alertEl   = document.getElementById('materialFormAlert');
+  const btn       = document.getElementById('uploadMaterialBtn');
+  const progWrap  = document.getElementById('uploadProgressWrap');
+  const progBar   = document.getElementById('uploadProgressBar');
+  const progLabel = document.getElementById('uploadProgressLabel');
+
+  alertEl.style.display = 'none';
+
+  if (!title)     { showAlert(alertEl, 'error', 'Please enter a material title.'); return; }
+  if (!programme) { showAlert(alertEl, 'error', 'Please select a programme.'); return; }
+  if (!file)      { showAlert(alertEl, 'error', 'Please choose a PDF file to upload.'); return; }
+  if (file.type !== 'application/pdf') { showAlert(alertEl, 'error', 'Only PDF files are accepted.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+  progWrap.style.display = 'block';
+  progBar.style.width    = '0%';
+  progLabel.textContent  = 'Uploading… 0%';
+
+  try {
+    const fileName = `${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+    const { downloadURL, publicId } = await uploadToCloudinary(file, fileName, (pct) => {
+      progBar.style.width   = pct + '%';
+      progLabel.textContent = `Uploading… ${pct}%`;
+    });
+
+    await setDoc(doc(collection(db, 'materials')), {
+      title,
+      programme,
+      fileName,
+      downloadURL,
+      publicId,
+      uploadedBy:  currentAdmin.uid,
+      uploadedAt:  serverTimestamp(),
+      fileSizeKB:  Math.round(file.size / 1024),
+    });
+    showAlert(alertEl, 'success', `✅ "${title}" uploaded successfully.`);
+    document.getElementById('newMaterialTitle').value = '';
+    document.getElementById('newMaterialProgramme').value = '';
+    fileInput.value = '';
+    btn.disabled = false; btn.textContent = 'Upload Material';
+    progWrap.style.display = 'none';
+    loadMaterials();
+  } catch (e) {
+    console.error('Upload error:', e);
+    showAlert(alertEl, 'error', 'Upload failed: ' + (e.message || 'Check your Cloudinary config.'));
+    btn.disabled = false; btn.textContent = 'Upload Material';
+    progWrap.style.display = 'none';
+  }
+};
+
+// ── Cloudinary upload helper ───────────────────────────
+// Uses XHR (not fetch) so we can report real upload progress.
+function uploadToCloudinary(file, publicId, onProgress) {
+  return new Promise((resolve, reject) => {
+    const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+    formData.append('public_id', publicId);
+    formData.append('folder', 'materials');
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url, true);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && onProgress) {
+        onProgress(Math.round((e.loaded / e.total) * 100));
+      }
+    };
+
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const res = JSON.parse(xhr.responseText);
+          resolve({ downloadURL: res.secure_url, publicId: res.public_id });
+        } catch (err) {
+          reject(new Error('Could not parse Cloudinary response.'));
+        }
+      } else {
+        let msg = `Cloudinary upload failed (HTTP ${xhr.status}).`;
+        try { msg = JSON.parse(xhr.responseText)?.error?.message || msg; } catch(_) {}
+        reject(new Error(msg));
+      }
+    };
+    xhr.onerror = () => reject(new Error('Network error during upload.'));
+    xhr.send(formData);
+  });
+}
+
+async function loadMaterials() {
+  const tbody = document.getElementById('materialsTable');
+  try {
+    const snap = await getDocs(query(collection(db, 'materials'), orderBy('uploadedAt', 'desc')));
+    if (snap.empty) {
+      tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <strong>No materials yet</strong><p>Upload a PDF above to get started.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = snap.docs.map(d => {
+      const m = d.data();
+      const date = m.uploadedAt ? (m.uploadedAt.toDate ? m.uploadedAt.toDate() : new Date(m.uploadedAt)).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+      return `<tr>
+        <td class="td-name">${m.title || '—'}</td>
+        <td>${m.programme || '—'}</td>
+        <td>${m.fileSizeKB ? m.fileSizeKB + ' KB' : '—'}</td>
+        <td class="td-date">${date}</td>
+        <td><div class="actions">
+          <a href="${m.downloadURL}" target="_blank" class="btn-act btn-view">View</a>
+          <button class="btn-act btn-remove" onclick="deleteMaterial('${d.id}','${m.fileName}','${(m.title||'').replace(/'/g,"\\'")}')">Delete</button>
+        </div></td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    console.error('Failed to load materials:', e);
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="5">Failed to load materials. Check Firestore rules.</td></tr>';
+  }
+}
+
+window.deleteMaterial = async (docId, fileName, title) => {
+  if (!confirm(`Delete "${title}"? This cannot be undone.`)) return;
+  try {
+    await deleteDoc(doc(db, 'materials', docId));
+    // Note: this only removes the database record, so it disappears from the
+    // app for everyone. The actual file stays in your Cloudinary account
+    // (free tier gives 25GB, so this is rarely a problem). Unsigned uploads
+    // can't delete files from the browser without exposing your API secret —
+    // if you want true deletion, periodically clear unused files from the
+    // Cloudinary Media Library, or add a small backend function later.
+    showToast(`"${title}" deleted.`, 'success');
+    loadMaterials();
+  } catch (e) {
+    showToast('Delete failed. Check your permissions.', 'error');
+  }
+};
+
+// ══════════════════════════════════════════
+//  ASSESSMENTS & EXAM LINKS
+// ══════════════════════════════════════════
+
+window.postAssessment = async () => {
+  const title       = document.getElementById('newAssessTitle').value.trim();
+  const programme   = document.getElementById('newAssessProgramme').value;
+  const link        = document.getElementById('newAssessLink').value.trim();
+  const type        = document.getElementById('newAssessType').value;
+  const deadline    = document.getElementById('newAssessDeadline').value;
+  const description = document.getElementById('newAssessDesc').value.trim();
+  const alertEl     = document.getElementById('assessFormAlert');
+  const btn         = document.getElementById('postAssessBtn');
+
+  alertEl.style.display = 'none';
+  if (!title)     { showAlert(alertEl, 'error', 'Please enter a title.'); return; }
+  if (!programme) { showAlert(alertEl, 'error', 'Please select a programme.'); return; }
+  if (!link)      { showAlert(alertEl, 'error', 'Please enter the assessment link.'); return; }
+  if (!/^https?:\/\/.+/.test(link)) { showAlert(alertEl, 'error', 'Link must start with http:// or https://'); return; }
+
+  btn.disabled = true; btn.textContent = 'Posting…';
+  try {
+    await setDoc(doc(collection(db, 'assessments')), {
+      title, programme, link, type, description,
+      deadline: deadline || null,
+      postedBy: currentAdmin.uid,
+      postedAt: serverTimestamp(),
+      active: true,
+    });
+    showAlert(alertEl, 'success', `✅ "${title}" posted successfully.`);
+    document.getElementById('newAssessTitle').value = '';
+    document.getElementById('newAssessProgramme').value = '';
+    document.getElementById('newAssessLink').value = '';
+    document.getElementById('newAssessDeadline').value = '';
+    document.getElementById('newAssessDesc').value = '';
+    loadAssessments();
+  } catch (e) {
+    console.error(e);
+    showAlert(alertEl, 'error', 'Failed to post assessment. Check your Firestore rules.');
+  }
+  btn.disabled = false; btn.textContent = 'Post Assessment / Exam Link';
+};
+
+async function loadAssessments() {
+  const tbody = document.getElementById('assessmentsTable');
+  if (!tbody) return;
+  try {
+    const snap = await getDocs(query(collection(db, 'assessments'), orderBy('postedAt', 'desc')));
+    if (snap.empty) {
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
+        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        <strong>No assessments posted yet</strong><p>Post an assessment or exam link above.</p></div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = snap.docs.map(d => {
+      const a = d.data();
+      const date = a.postedAt ? (a.postedAt.toDate ? a.postedAt.toDate() : new Date(a.postedAt)).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+      const deadline = a.deadline ? new Date(a.deadline).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+      const typeBadge = a.type === 'exam' ? `<span class="badge badge--rejected">Exam</span>` :
+                        a.type === 'assignment' ? `<span class="badge badge--pending">Assignment</span>` :
+                        `<span class="badge badge--approved">Assessment</span>`;
+      return `<tr>
+        <td class="td-name">${a.title || '—'}</td>
+        <td>${a.programme || '—'}</td>
+        <td>${typeBadge}</td>
+        <td class="td-date">${deadline}</td>
+        <td class="td-date">${date}</td>
+        <td><div class="actions">
+          <a href="${a.link}" target="_blank" class="btn-act btn-view">Open Link</a>
+          <button class="btn-act btn-remove" onclick="deleteAssessment('${d.id}','${(a.title||'').replace(/'/g,"\\'")}')">Delete</button>
+        </div></td>
+      </tr>`;
+    }).join('');
+  } catch (e) {
+    console.error('Failed to load assessments:', e);
+    if (tbody) tbody.innerHTML = '<tr class="loading-row"><td colspan="6">Failed to load assessments. Check Firestore rules.</td></tr>';
+  }
+}
+
+window.deleteAssessment = async (docId, title) => {
+  if (!confirm(`Delete "${title}"? Students will no longer see this link.`)) return;
+  try {
+    await deleteDoc(doc(db, 'assessments', docId));
+    showToast(`"${title}" removed.`, 'success');
+    loadAssessments();
+  } catch (e) {
+    showToast('Delete failed. Check your permissions.', 'error');
+  }
+};
+
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = `toast show ${type}`;
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+// ── Alert helper ──────────────────────────────────────
+function showAlert(el, type, msg) {
+  el.className  = `form-alert ${type}`;
+  el.innerHTML  = msg;
+  el.style.display = 'flex';
+}
+
+// ── Auth guard: re-verify admin access on tab return ──
+// ONLY sign out if Firestore explicitly says the doc doesn't exist.
+// Never sign out on a network/timeout error — that causes the "bounce back" bug.
+document.addEventListener('visibilitychange', async () => {
+  if (!document.hidden && currentAdmin && dashboardLoaded) {
+    try {
+      const adminDoc = await getDoc(doc(db, 'admins', currentAdmin.uid));
+      // Only act if the read fully succeeded AND the doc is gone
+      if (adminDoc.metadata && !adminDoc.metadata.fromCache && !adminDoc.exists()) {
+        await signOut(auth);
+        showLogin('Your admin access has been revoked.');
+      }
+    } catch (err) {
+      // Transient read failure (network blip, tab throttled in background) —
+      // do NOT sign the admin out. Just log it.
+      console.warn('Visibility re-check failed, ignoring:', err.code || err.message);
+    }
+  }
+});
+
+</script>
+</body>
+</html>

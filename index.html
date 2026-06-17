@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/jpg" href="assets/logos/learning-hub-footer.png">
+
+  <title>The Professional Learning Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── DESIGN TOKENS ─────────────────────────────── */
+    :root {
+      --teal:       #1f6390;
+      --teal-dark:  #1b3d5c;
+      --teal-light: #eaf1f9;
+      --green:      #0f2c44;
+      --gold:       #7ab7e0;
+      --gold-light: #dce6f0;
+      --ink:        #0b1b2f;
+      --ink-soft:   #1f3a57;
+      --mist:       #f8fafc;
+      --white:      #ffffff;
+      --border:     #e9edf2;
+      --nav-h:      76px;
+    }
+
+    /* ─── RESET ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      background: var(--white);
+      line-height: 1.6;
+    }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ─── NAV ────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex; align-items: center;
+      box-shadow: 0 2px 12px rgba(14,107,107,.07);
+    }
+    .nav__inner {
+      width: 100%; max-width: 1240px; margin: 0 auto;
+      padding: 0 2rem;
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .nav__logo {
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .nav__logo img { height: 48px; width: auto; }
+    .nav__links {
+      display: flex; align-items: center; gap: .25rem;
+      margin-left: auto;
+    }
+    .nav__link {
+      font-size: .875rem; font-weight: 500;
+      color: var(--ink-soft);
+      padding: .5rem .85rem;
+      border-radius: 6px;
+      transition: color .2s, background .2s;
+      white-space: nowrap;
+    }
+    .nav__link:hover { color: var(--teal); background: var(--teal-light); }
+
+    /* dropdown */
+    .nav__dropdown { position: relative; }
+    .nav__dropdown-toggle {
+      display: flex; align-items: center; gap: .35rem;
+      cursor: pointer;
+    }
+    .nav__dropdown-toggle svg { transition: transform .2s; }
+    .nav__dropdown:hover .nav__dropdown-toggle svg { transform: rotate(180deg); }
+    .nav__dropdown-menu {
+      display: none;
+      position: absolute; top: calc(100% + .5rem); left: 0;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .5rem;
+      min-width: 180px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+    }
+    .nav__dropdown:hover .nav__dropdown-menu { display: block; }
+    .nav__dropdown-menu a {
+      display: block; padding: .6rem 1rem;
+      font-size: .875rem; font-weight: 500; color: var(--ink-soft);
+      border-radius: 6px;
+      transition: background .2s, color .2s;
+    }
+    .nav__dropdown-menu a:hover { background: var(--teal-light); color: var(--teal); }
+
+    .nav__cta {
+      margin-left: 1rem;
+      display: inline-flex; align-items: center;
+      background: var(--teal); color: var(--white);
+      font-size: .875rem; font-weight: 600;
+      padding: .6rem 1.4rem; border-radius: 8px;
+      transition: background .2s, transform .15s;
+      white-space: nowrap;
+    }
+    .nav__cta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    /* ─── HERO ───────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #0b1b2f 0%, var(--teal-dark) 55%, var(--teal) 100%);
+      min-height: calc(100vh - var(--nav-h));
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* decorative geometric accent */
+    .hero::before {
+      content: '';
+      position: absolute; top: -80px; right: -80px;
+      width: 420px; height: 420px;
+      background: var(--gold);
+      opacity: .08;
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: '';
+      position: absolute; bottom: -120px; left: 30%;
+      width: 280px; height: 280px;
+      background: var(--white);
+      opacity: .04;
+      border-radius: 50%;
+    }
+
+    .hero__copy {
+      padding: 5rem 3rem 5rem 5rem;
+      position: relative; z-index: 1;
+    }
+    .hero__eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(122,183,224,.18);
+      border: 1px solid rgba(122,183,224,.4);
+      color: #cfe4f4;
+      font-size: .75rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .35rem .9rem; border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .hero__eyebrow::before {
+      content: '';
+      display: inline-block; width: 6px; height: 6px;
+      background: var(--gold); border-radius: 50%;
+    }
+    .hero__headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 4.5vw, 3.6rem);
+      font-weight: 900;
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+    }
+    .hero__headline span {
+      color: var(--gold);
+      position: relative;
+    }
+    .hero__sub {
+      font-size: 1.05rem; font-weight: 300;
+      color: rgba(255,255,255,.82);
+      max-width: 440px;
+      margin-bottom: 2.5rem;
+      line-height: 1.75;
+    }
+    .hero__actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--teal-dark); color: var(--white);
+      font-size: .95rem; font-weight: 700;
+      padding: .85rem 2rem; border-radius: 8px;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: var(--green); transform: translateY(-2px); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: .5rem;
+      border: 1.5px solid rgba(255,255,255,.45);
+      color: var(--white);
+      font-size: .95rem; font-weight: 500;
+      padding: .85rem 2rem; border-radius: 8px;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-ghost:hover { border-color: var(--white); background: rgba(255,255,255,.08); }
+
+    .hero__stats {
+      display: flex; gap: 2.5rem; margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,.15);
+    }
+    .hero__stat-n {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 700; color: var(--gold);
+    }
+    .hero__stat-l {
+      font-size: .8rem; color: rgba(255,255,255,.65);
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-top: .1rem;
+    }
+
+    /* hero image panel */
+    .hero__visual {
+      position: relative; height: 100%;
+      min-height: 580px;
+      overflow: hidden;
+    }
+    .hero__img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 1;
+    }
+    /* stacked card overlay */
+    .hero__card {
+      position: absolute; bottom: 3rem; left: -2rem;
+      background: var(--white);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 16px 48px rgba(0,0,0,.22);
+      min-width: 220px;
+      animation: floatCard 4s ease-in-out infinite;
+    }
+    @keyframes floatCard {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .hero__card-label {
+      font-size: .7rem; font-weight: 600; color: var(--teal);
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .hero__card-val {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--ink);
+      margin-top: .25rem;
+    }
+    .hero__card-sub { font-size: .8rem; color: var(--ink-soft); margin-top: .1rem; }
+    .hero__badge {
+      position: absolute; top: 2.5rem; right: 2rem;
+      background: var(--teal-dark);
+      border: 2px solid rgba(122,183,224,.4);
+      border-radius: 50%; width: 90px; height: 90px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      box-shadow: 0 8px 24px rgba(27,61,92,.5);
+    }
+    .hero__badge-n {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; font-weight: 900; color: var(--white);
+      line-height: 1;
+    }
+    .hero__badge-l { font-size: .55rem; font-weight: 700; color: rgba(255,255,255,.8); text-align: center; }
+
+    /* ─── TRUST BAR ──────────────────────────────────── */
+    .trust-bar {
+      background: var(--ink);
+      padding: 1.25rem 2rem;
+      display: flex; align-items: center; justify-content: center;
+      gap: 3rem; flex-wrap: wrap;
+    }
+    .trust-bar__label {
+      font-size: .75rem; font-weight: 600;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase; letter-spacing: .1em;
+    }
+    .trust-bar__divider {
+      width: 1px; height: 20px;
+      background: rgba(255,255,255,.15);
+    }
+    .trust-bar__item {
+      display: flex; align-items: center; gap: .5rem;
+      color: rgba(255,255,255,.75);
+      font-size: .82rem; font-weight: 500;
+    }
+    .trust-bar__item svg { color: var(--teal); }
+
+    /* ─── SECTION SHARED ─────────────────────────────── */
+    .section { padding: 6rem 2rem; }
+    .section--alt { background: var(--mist); }
+    .container { max-width: 1240px; margin: 0 auto; }
+    .section-label {
+      font-size: .75rem; font-weight: 700;
+      color: var(--teal); text-transform: uppercase; letter-spacing: .12em;
+      margin-bottom: .75rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700; color: var(--ink);
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      font-size: 1rem; color: var(--ink-soft);
+      max-width: 540px; line-height: 1.7;
+    }
+    .section-head { margin-bottom: 3.5rem; }
+
+    /* ─── HOW IT WORKS ───────────────────────────────── */
+    .hiw__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+    }
+    .hiw__step {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem 1.75rem;
+      position: relative;
+      transition: box-shadow .25s, transform .25s;
+    }
+    .hiw__step:hover { box-shadow: 0 12px 36px rgba(14,107,107,.1); transform: translateY(-4px); }
+    .hiw__step-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem; font-weight: 900;
+      color: var(--teal-light);
+      line-height: 1;
+      margin-bottom: 1.25rem;
+    }
+    .hiw__step-icon {
+      width: 48px; height: 48px;
+      background: var(--teal-light); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .hiw__step-icon svg { color: var(--teal); }
+    .hiw__step h3 {
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--ink); margin-bottom: .5rem;
+    }
+    .hiw__step p { font-size: .875rem; color: var(--ink-soft); line-height: 1.65; }
+    .hiw__connector {
+      display: flex; align-items: center; justify-content: center;
+      color: var(--border);
+      font-size: 1.5rem; padding-top: 2rem;
+    }
+
+    /* ─── WHAT YOU GET ───────────────────────────────── */
+    .features__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem;
+      display: flex; gap: 1.25rem;
+      transition: box-shadow .25s;
+    }
+    .feature-card:hover { box-shadow: 0 8px 28px rgba(14,107,107,.09); }
+    .feature-card--accent {
+      background: var(--teal);
+      border-color: var(--teal-dark);
+    }
+    .feature-card--accent h3, .feature-card--accent p { color: var(--white); }
+    .feature-card--accent .fc__icon { background: rgba(255,255,255,.15); }
+    .feature-card--accent .fc__icon svg { color: var(--gold); }
+    .fc__icon {
+      flex-shrink: 0;
+      width: 52px; height: 52px;
+      background: var(--teal-light);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .fc__icon svg { color: var(--teal); }
+    .fc__body h3 { font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: .4rem; }
+    .fc__body p { font-size: .875rem; color: var(--ink-soft); line-height: 1.65; }
+
+    /* ─── SPLIT: WHY TPLH ────────────────────────────── */
+    .why__grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .why__img-wrap {
+      position: relative; border-radius: 20px; overflow: hidden;
+    }
+    .why__img { width: 100%; height: 480px; object-fit: cover; }
+    .why__img-badge {
+      position: absolute; bottom: 1.5rem; right: 1.5rem;
+      background: var(--teal-dark);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .why__img-badge-n {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem; font-weight: 900; color: var(--white);
+    }
+    .why__img-badge-l { font-size: .75rem; font-weight: 600; color: rgba(255,255,255,.75); }
+    .why__list { margin-top: 2rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .why__item {
+      display: flex; gap: 1rem; align-items: flex-start;
+    }
+    .why__check {
+      flex-shrink: 0;
+      width: 24px; height: 24px;
+      background: var(--teal-light); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: .15rem;
+    }
+    .why__check svg { color: var(--teal); }
+    .why__item h4 { font-size: .95rem; font-weight: 700; color: var(--ink); margin-bottom: .2rem; }
+    .why__item p { font-size: .875rem; color: var(--ink-soft); line-height: 1.65; }
+
+    /* ─── TESTIMONIALS ───────────────────────────────── */
+    .testimonials__grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .tcard {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem;
+      display: flex; flex-direction: column; gap: 1rem;
+      transition: box-shadow .25s, transform .25s;
+    }
+    .tcard:hover { box-shadow: 0 10px 32px rgba(14,107,107,.1); transform: translateY(-3px); }
+    .tcard__stars { color: var(--teal); font-size: 1rem; letter-spacing: .1rem; }
+    .tcard__quote {
+      font-size: .9rem; color: var(--ink-soft);
+      line-height: 1.7; font-style: italic;
+      flex: 1;
+    }
+    .tcard__quote::before { content: '\201C'; color: var(--teal); font-size: 1.4rem; line-height: 0; vertical-align: -.3em; margin-right: .15rem; }
+    .tcard__author { display: flex; gap: .75rem; align-items: center; }
+    .tcard__avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      object-fit: cover; background: var(--teal-light);
+      flex-shrink: 0;
+    }
+    .tcard__name { font-size: .875rem; font-weight: 700; color: var(--ink); }
+    .tcard__role { font-size: .75rem; color: var(--ink-soft); }
+
+    /* ─── CTA BANNER ─────────────────────────────────── */
+    .cta-banner {
+      background: linear-gradient(120deg, var(--teal-dark), var(--teal));
+      border-radius: 24px;
+      padding: 4rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap;
+      position: relative; overflow: hidden;
+    }
+    .cta-banner::before {
+      content: '';
+      position: absolute; right: -60px; top: -60px;
+      width: 300px; height: 300px;
+      background: rgba(255,255,255,.05); border-radius: 50%;
+    }
+    .cta-banner__title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700; color: var(--white);
+      line-height: 1.2;
+    }
+    .cta-banner__sub {
+      font-size: .95rem; color: rgba(255,255,255,.75);
+      margin-top: .5rem;
+    }
+    .cta-banner__actions { display: flex; gap: 1rem; }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      padding: 4rem 2rem 2rem;
+      color: rgba(255,255,255,.7);
+    }
+    .footer__grid {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem; padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .footer__brand img { height: 52px; width: auto; margin-bottom: 1rem; display: block; }
+    .footer__brand p { font-size: .85rem; line-height: 1.7; max-width: 260px; }
+    .footer__col h4 { color: var(--white); font-size: .85rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1rem; }
+    .footer__col li { margin-bottom: .6rem; }
+    .footer__col a { font-size: .85rem; transition: color .2s; }
+    .footer__col a:hover { color: var(--teal); }
+    .footer__bottom {
+      max-width: 1240px; margin: 0 auto;
+      padding-top: 2rem;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+      font-size: .8rem;
+    }
+    .footer__bottom a { color: rgba(255,255,255,.5); transition: color .2s; }
+    .footer__bottom a:hover { color: var(--teal); }
+    .footer__gold { color: var(--gold); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero__visual { display: none; }
+      .hero__copy { padding: 4rem 2rem; }
+      .why__grid, .features__grid { grid-template-columns: 1fr; }
+      .testimonials__grid { grid-template-columns: 1fr; }
+      .footer__grid { grid-template-columns: 1fr 1fr; }
+      .cta-banner { text-align: center; justify-content: center; }
+      .nav__links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .footer__grid { grid-template-columns: 1fr; }
+      .hero__stats { flex-wrap: wrap; gap: 1.5rem; }
+      .trust-bar { gap: 1rem; }
+    }
+
+    /* ─── SCROLL REVEAL ──────────────────────────────── */
+    .reveal {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ════════════════════════════════════ -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav__inner">
+    <!-- Logo -->
+    <a href="index.html" class="nav__logo" aria-label="The Professional Learning Hub home">
+      <img src="assets/logos/learning-hub-logo.png" alt="The Professional Learning Hub" />
+    </a>
+
+    <!-- Links -->
+    <div class="nav__links" role="menubar">
+      <a href="students.html" class="nav__link" role="menuitem">Students</a>
+      <a href="hiw.html" class="nav__link" role="menuitem">How It Works</a>
+      <a href="wlh.html" class="nav__link" role="menuitem">Why Learning Hub</a>
+
+      <!-- Login dropdown -->
+      <div class="nav__dropdown" role="menuitem" aria-haspopup="true">
+        <span class="nav__link nav__dropdown-toggle">
+          Login
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </span>
+        <div class="nav__dropdown-menu" role="menu">
+          <a href="login.html" role="menuitem">
+            <span>Student Login</span>
+          </a>
+          <a href="adlogin.html" role="menuitem">
+            <span>Admin Login</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <a href="signup.html" class="nav__cta" aria-label="Get started with The Professional Learning Hub">
+      Get Started →
+    </a>
+  </div>
+</nav>
+
+<!-- ═══ HERO ══════════════════════════════════════════ -->
+<section class="hero" aria-label="Hero section">
+  <div class="hero__copy">
+    <div class="hero__eyebrow">Approved Students Only</div>
+    <h1 class="hero__headline">
+      Advance Your Career.<br />
+      Learn at Your <span>Own Pace.</span>
+    </h1>
+    <p class="hero__sub">
+      The Professional Learning Hub is a dedicated platform for adult learners — 
+      access curated study materials, prepare with confidence, and sit 
+      your examinations all in one secure environment.
+    </p>
+    <div class="hero__actions">
+      <a href="signup.html" class="btn-primary">
+        Get Started
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="hiw.html" class="btn-ghost">How It Works</a>
+    </div>
+    <div class="hero__stats">
+      <div>
+        <div class="hero__stat-n">1,200+</div>
+        <div class="hero__stat-l">Approved Students</div>
+      </div>
+      <div>
+        <div class="hero__stat-n">85+</div>
+        <div class="hero__stat-l">Study Programmes</div>
+      </div>
+      <div>
+        <div class="hero__stat-n">98%</div>
+        <div class="hero__stat-l">Exam Pass Rate</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__visual" aria-hidden="true">
+    <img
+      class="hero__img"
+      src="assets/images/tplh1.jpg"
+      alt="Professional adult learners studying"
+    />
+    
+    <div class="hero__badge">
+      <div class="hero__badge-n">A+</div>
+      <div class="hero__badge-l">Excellence<br/>Standard</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TRUST BAR ═════════════════════════════════════ -->
+<div class="trust-bar" aria-label="Platform highlights">
+  <span class="trust-bar__label">Built for Professionals</span>
+  <div class="trust-bar__divider" aria-hidden="true"></div>
+  <div class="trust-bar__item">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    Admin-curated materials
+  </div>
+  <div class="trust-bar__item">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    Secure online examinations
+  </div>
+  <div class="trust-bar__item">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    Approved enrollment only
+  </div>
+  <div class="trust-bar__item">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    Self-paced reading programmes
+  </div>
+</div>
+
+<!-- ═══ HOW IT WORKS ══════════════════════════════════ -->
+<section class="section section--alt" aria-labelledby="hiw-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-label">The Process</p>
+      <h2 class="section-title" id="hiw-title">From Enrolment to Excellence</h2>
+      <p class="section-sub">A structured, straightforward journey built so you can focus entirely on learning — not on figuring out the platform.</p>
+    </div>
+    <div class="hiw__grid">
+
+      <div class="hiw__step reveal">
+        <div class="hiw__step-num">01</div>
+        <div class="hiw__step-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Get Approved</h3>
+        <p>Register your interest and await administrator approval. Once cleared, you receive your access credentials to the platform.</p>
+      </div>
+
+      <div class="hiw__step reveal">
+        <div class="hiw__step-num">02</div>
+        <div class="hiw__step-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <h3>Access Your Materials</h3>
+        <p>Log in to find study documents and resources uploaded by your administrator — organised by programme and module.</p>
+      </div>
+
+      <div class="hiw__step reveal">
+        <div class="hiw__step-num">03</div>
+        <div class="hiw__step-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Study at Your Pace</h3>
+        <p>Read through materials at a schedule that fits your professional life. No live sessions, no videos — just focused reading, your way.</p>
+      </div>
+
+      <div class="hiw__step reveal">
+        <div class="hiw__step-num">04</div>
+        <div class="hiw__step-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <h3>Sit Your Exam</h3>
+        <p>When you are ready, take admin-managed examinations directly on the platform. Your results are securely recorded and released promptly.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHAT YOU GET ═══════════════════════════════════ -->
+<section class="section" aria-labelledby="features-title">
+  <div class="container">
+    <div class="section-head reveal">
+      <p class="section-label">Platform Features</p>
+      <h2 class="section-title" id="features-title">Everything You Need, Nothing You Don't</h2>
+      <p class="section-sub">We keep it simple and purposeful. No distractions — just the tools that help professional learners succeed.</p>
+    </div>
+    <div class="features__grid">
+
+      <div class="feature-card reveal">
+        <div class="fc__icon">
+          <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div class="fc__body">
+          <h3>Curated Study Documents</h3>
+          <p>All reading materials are handpicked and uploaded by your programme administrator — no sifting through irrelevant content.</p>
+        </div>
+      </div>
+
+      <div class="feature-card feature-card reveal">
+        <div class="fc__icon">
+          <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <div class="fc__body">
+          <h3>Managed Examinations</h3>
+          <p>Exams are created, scheduled, and controlled by administrators. Sit them online — securely, fairly, and with prompt results.</p>
+        </div>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="fc__icon">
+          <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="fc__body">
+          <h3>Secure, Approved Access</h3>
+          <p>Only enrolled and admin-approved students gain entry. Your learning space stays private, focused, and distraction-free.</p>
+        </div>
+      </div>
+
+      <div class="feature-card reveal">
+        <div class="fc__icon">
+          <svg width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="fc__body">
+          <h3>Fully Self-Paced</h3>
+          <p>No mandatory sessions, no schedules to follow. Access your materials any time, read at the speed that suits your lifestyle.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHY LEARNING HUB ════════════════════════════════ -->
+<section class="section section--alt" aria-labelledby="why-title">
+  <div class="container">
+    <div class="why__grid">
+      <div class="why__img-wrap reveal">
+        <img class="why__img" src="assets/images/tplh2.jpg" alt="Adult professional studying with documents" />
+        <div class="why__img-badge">
+          <div>
+            <div class="why__img-badge-n">98%</div>
+            <div class="why__img-badge-l">Exam Pass<br/>Rate</div>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <p class="section-label">Why Choose Us</p>
+        <h2 class="section-title" id="why-title">A Platform Built Specifically for Adult Professionals</h2>
+        <p class="section-sub">The Professional Learning Hub was designed from the ground up for working adults — not school children. Your time is valuable, and we respect that.</p>
+        <ul class="why__list">
+          <li class="why__item">
+            <div class="why__check">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>No Noise, No Distractions</h4>
+              <p>No video lectures, no voice notes, no live sessions to attend. Just structured reading materials whenever you're ready.</p>
+            </div>
+          </li>
+          <li class="why__item">
+            <div class="why__check">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>Expert-Administered Programmes</h4>
+              <p>Every material and every exam is managed by qualified administrators who ensure content quality and examination integrity.</p>
+            </div>
+          </li>
+          <li class="why__item">
+            <div class="why__check">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>Credible, Recognised Certifications</h4>
+              <p>Examinations are conducted with rigour. Your certificate upon passing carries real professional weight.</p>
+            </div>
+          </li>
+          <li class="why__item">
+            <div class="why__check">
+              <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div>
+              <h4>A Private, Controlled Environment</h4>
+              <p>Access is by approval only, creating a focused community of committed professionals — not an open public forum.</p>
+            </div>
+          </li>
+        </ul>
+        <a href="wlh.html" style="display:inline-flex;align-items:center;gap:.5rem;margin-top:2rem;color:var(--teal);font-weight:700;font-size:.95rem;">
+          Learn more about our approach
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ══════════════════════════════════ -->
+<section class="section" aria-labelledby="testimonials-title">
+  <div class="container">
+    <div class="section-head reveal" style="text-align:center; max-width:600px; margin:0 auto 3.5rem;">
+      <p class="section-label">Student Voices</p>
+      <h2 class="section-title" id="testimonials-title">What Our Students Say</h2>
+    </div>
+    <div class="testimonials__grid">
+
+      <div class="tcard reveal">
+        <div class="tcard__stars">★★★★★</div>
+        <p class="tcard__quote">
+          The platform's simplicity is exactly what I needed. No cluttered interface, just my study materials and the exam. Passed on my first attempt.
+        </p>
+        <div class="tcard__author">
+          <img class="tcard__avatar" src="assets/images/tplh3.jpg" alt="Portrait of Amara O." />
+          <div>
+            <div class="tcard__name">Amara O.</div>
+            <div class="tcard__role">Financial Compliance Programme</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tcard reveal">
+        <div class="tcard__stars">★★★★★</div>
+        <p class="tcard__quote">
+          I've been in professional training for years. TPLH is the most focused platform I've used — no videos, no noise, just the material that matters.
+        </p>
+        <div class="tcard__author">
+          <img class="tcard__avatar" src="assets/images/tplh4.jpg" alt="Portrait of Emmanuel K." />
+          <div>
+            <div class="tcard__name">Emmanuel K.</div>
+            <div class="tcard__role">Project Management Certificate</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tcard reveal">
+        <div class="tcard__stars">★★★★★</div>
+        <p class="tcard__quote">
+          Balancing work and study is hard. But with self-paced reading and a well-organised exam system, I managed to certify without missing a beat at work.
+        </p>
+        <div class="tcard__author">
+          <img class="tcard__avatar" src="assets/images/tplh5.jpg" alt="Portrait of Ngozi A." />
+          <div>
+            <div class="tcard__name">Ngozi A.</div>
+            <div class="tcard__role">Business Administration Programme</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA BANNER ════════════════════════════════════ -->
+<section class="section" aria-label="Call to action">
+  <div class="container">
+    <div class="cta-banner reveal">
+      <div>
+        <h2 class="cta-banner__title">Ready to Begin Your Professional Journey?</h2>
+        <p class="cta-banner__sub">Submit your enrolment request today and take the first step toward your next certification.</p>
+      </div>
+      <div class="cta-banner__actions">
+        <a href="signup.html" class="btn-primary">
+          Get Started
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="hiw.html" class="btn-ghost">How It Works</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════ -->
+<footer>
+  <div class="footer__grid">
+    <div class="footer__brand">
+      <img
+        src="assets/logos/learning-hub-footer.png"
+        alt="The Professional Learning Hub"
+        style="height:52px;width:auto;"
+        onerror="this.onerror=null;this.src='assets/logos/learning-hub-logo.png';"
+      />
+      <p>A dedicated platform for adult professionals to access study materials and sit examinations — securely, efficiently, and at their own pace.</p>
+    </div>
+    <nav class="footer__col" aria-label="Quick links">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="students.html">Students</a></li>
+        <li><a href="hiw.html">How It Works</a></li>
+        <li><a href="wlh.html">Why Learning Hub</a></li>
+        <li><a href="signup.html">Get Started</a></li>
+      </ul>
+    </nav>
+    <nav class="footer__col" aria-label="Access links">
+      <h4>Access</h4>
+      <ul>
+        <li><a href="login.html">Student Login</a></li>
+        <li><a href="adlogin.html">Admin Login</a></li>
+        <li><a href="signup.html">Enrol Now</a></li>
+      </ul>
+    </nav>
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:info@tplhub.com">info@tplhub.com</a></li>
+        <li style="font-size:.85rem; line-height:1.6;">For enrolment enquiries, contact your programme administrator directly.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>© 2026 <span class="footer__gold">The Professional Learning Hub</span>. All rights reserved.</span>
+    <div style="display:flex;gap:1.5rem;">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ SCROLL REVEAL SCRIPT ══════════════════════════ -->
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

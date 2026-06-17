@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/logos/learning-hub-footer.png" />
+  <title>How It Works – The Professional Learning Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────── */
+    :root {
+      --teal:       #1f6390;
+      --teal-dark:  #1b3d5c;
+      --teal-light: #eaf1f9;
+      --green:      #0f2c44;
+      --gold:       #7ab7e0;
+      --gold-light: #dce6f0;
+      --ink:        #0b1b2f;
+      --ink-soft:   #1f3a57;
+      --mist:       #f8fafc;
+      --white:      #ffffff;
+      --border:     #e9edf2;
+      --nav-h:      76px;
+    }
+
+    /* ─── RESET ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--ink); background: var(--white); line-height: 1.6; }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ─── NAV ─────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--white); border-bottom: 1px solid var(--border);
+      height: var(--nav-h); display: flex; align-items: center;
+      box-shadow: 0 2px 12px rgba(14,107,107,.07);
+    }
+    .nav__inner {
+      width: 100%; max-width: 1240px; margin: 0 auto;
+      padding: 0 2rem; display: flex; align-items: center; gap: 2rem;
+    }
+    .nav__logo img { height: 48px; width: auto; }
+    .nav__links { display: flex; align-items: center; gap: .25rem; margin-left: auto; }
+    .nav__link {
+      font-size: .875rem; font-weight: 500; color: var(--ink-soft);
+      padding: .5rem .85rem; border-radius: 6px;
+      transition: color .2s, background .2s; white-space: nowrap;
+    }
+    .nav__link:hover, .nav__link.active { color: var(--teal); background: var(--teal-light); }
+    .nav__dropdown { position: relative; }
+    .nav__dropdown-toggle { display: flex; align-items: center; gap: .35rem; cursor: pointer; }
+    .nav__dropdown-toggle svg { transition: transform .2s; }
+    .nav__dropdown:hover .nav__dropdown-toggle svg { transform: rotate(180deg); }
+    .nav__dropdown-menu {
+      display: none; position: absolute; top: calc(100% + .5rem); left: 0;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; padding: .5rem; min-width: 180px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+    }
+    .nav__dropdown:hover .nav__dropdown-menu { display: block; }
+    .nav__dropdown-menu a {
+      display: block; padding: .6rem 1rem;
+      font-size: .875rem; font-weight: 500; color: var(--ink-soft);
+      border-radius: 6px; transition: background .2s, color .2s;
+    }
+    .nav__dropdown-menu a:hover { background: var(--teal-light); color: var(--teal); }
+    .nav__cta {
+      margin-left: 1rem; display: inline-flex; align-items: center;
+      background: var(--teal); color: var(--white);
+      font-size: .875rem; font-weight: 600;
+      padding: .6rem 1.4rem; border-radius: 8px;
+      transition: background .2s, transform .15s; white-space: nowrap;
+    }
+    .nav__cta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    /* ─── SHARED ─────────────────────────────────────── */
+    .section { padding: 5rem 2rem; }
+    .section--alt { background: var(--mist); }
+    .container { max-width: 1240px; margin: 0 auto; }
+    .section-label {
+      font-size: .72rem; font-weight: 700; color: var(--teal);
+      text-transform: uppercase; letter-spacing: .12em; margin-bottom: .6rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700; color: var(--ink); line-height: 1.2; margin-bottom: 1rem;
+    }
+    .section-sub { font-size: .975rem; color: var(--ink-soft); max-width: 560px; line-height: 1.75; }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── PAGE HERO ──────────────────────────────────── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--green) 0%, var(--teal-dark) 55%, var(--teal) 100%);
+      padding: 5rem 2rem 4rem; position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .page-hero::before {
+      content: ''; position: absolute; top: -100px; right: -100px;
+      width: 420px; height: 420px;
+      background: var(--gold); opacity: .06; border-radius: 50%;
+    }
+    .page-hero::after {
+      content: ''; position: absolute; bottom: -80px; left: -80px;
+      width: 300px; height: 300px;
+      background: var(--white); opacity: .04; border-radius: 50%;
+    }
+    .page-hero__inner { max-width: 720px; margin: 0 auto; position: relative; z-index: 1; }
+    .page-hero__eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(122,183,224,.15); border: 1px solid rgba(122,183,224,.35);
+      color: var(--gold-light); font-size: .72rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .3rem .85rem; border-radius: 20px; margin-bottom: 1.25rem;
+    }
+    .page-hero__eyebrow::before {
+      content: ''; display: inline-block; width: 6px; height: 6px;
+      background: var(--gold); border-radius: 50%;
+    }
+    .page-hero__title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      font-weight: 900; color: var(--white); line-height: 1.15; margin-bottom: 1.25rem;
+    }
+    .page-hero__title span { color: var(--gold); }
+    .page-hero__sub {
+      font-size: 1.05rem; font-weight: 300;
+      color: rgba(255,255,255,.8); line-height: 1.8; margin-bottom: 2.25rem;
+    }
+    .page-hero__actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--teal); color: var(--white);
+      font-size: .95rem; font-weight: 600;
+      padding: .8rem 1.8rem; border-radius: 8px;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: .5rem;
+      border: 1.5px solid rgba(255,255,255,.45); color: var(--white);
+      font-size: .95rem; font-weight: 500;
+      padding: .8rem 1.8rem; border-radius: 8px;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,.08); }
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--gold); color: var(--ink);
+      font-size: .9rem; font-weight: 700;
+      padding: .8rem 1.8rem; border-radius: 8px;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-gold:hover { opacity: .9; transform: translateY(-2px); }
+
+    /* ─── PROCESS TIMELINE ───────────────────────────── */
+    .timeline { padding: 5rem 2rem; }
+    .timeline__inner { max-width: 1240px; margin: 0 auto; }
+    .timeline__head { text-align: center; max-width: 620px; margin: 0 auto 4rem; }
+
+    .timeline__steps { position: relative; }
+
+    /* vertical connector line */
+    .timeline__steps::before {
+      content: ''; position: absolute;
+      left: 50%; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+      transform: translateX(-50%);
+    }
+
+    .tl-step {
+      display: grid; grid-template-columns: 1fr 80px 1fr;
+      gap: 0 2rem; align-items: start;
+      margin-bottom: 4rem;
+      position: relative;
+    }
+    .tl-step:last-child { margin-bottom: 0; }
+
+    /* odd steps: content left, empty right */
+    .tl-step__content {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem;
+      box-shadow: 0 4px 20px rgba(11,27,47,.06);
+      transition: box-shadow .25s, transform .25s;
+    }
+    .tl-step__content:hover { box-shadow: 0 12px 36px rgba(31,99,144,.1); transform: translateY(-3px); }
+
+    .tl-step__center {
+      display: flex; flex-direction: column;
+      align-items: center; padding-top: 1.5rem;
+      position: relative; z-index: 1;
+    }
+    .tl-step__bubble {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--teal); color: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; font-weight: 700;
+      box-shadow: 0 4px 16px rgba(31,99,144,.3);
+      flex-shrink: 0;
+    }
+    .tl-step__bubble--gold { background: var(--gold); color: var(--ink); }
+
+    .tl-step__empty { /* spacer for alternating layout */ }
+
+    /* even steps: flip — empty left, content right */
+    .tl-step--right .tl-step__content { grid-column: 3; grid-row: 1; }
+    .tl-step--right .tl-step__center { grid-column: 2; grid-row: 1; }
+    .tl-step--right .tl-step__empty { grid-column: 1; grid-row: 1; }
+
+    .tl-step__icon {
+      width: 46px; height: 46px; border-radius: 11px;
+      background: var(--teal-light);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .tl-step__icon svg { color: var(--teal); }
+    .tl-step__content h3 {
+      font-size: 1.05rem; font-weight: 700; color: var(--ink); margin-bottom: .5rem;
+    }
+    .tl-step__content p { font-size: .875rem; color: var(--ink-soft); line-height: 1.7; }
+    .tl-step__tag {
+      display: inline-block; margin-top: 1rem;
+      background: var(--teal-light); color: var(--teal);
+      font-size: .72rem; font-weight: 700;
+      padding: .3rem .75rem; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: .06em;
+    }
+
+    /* ─── PLATFORM BREAKDOWN ─────────────────────────── */
+    .breakdown-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .breakdown-card {
+      border-radius: 16px; padding: 2rem;
+      border: 1px solid var(--border); background: var(--white);
+      transition: box-shadow .25s, transform .25s;
+    }
+    .breakdown-card:hover { box-shadow: 0 10px 32px rgba(31,99,144,.1); transform: translateY(-4px); }
+    .breakdown-card--accent {
+      background: var(--teal-dark); border-color: var(--teal-dark);
+    }
+    .breakdown-card--accent h3,
+    .breakdown-card--accent p { color: var(--white); }
+    .breakdown-card--accent .bc-icon { background: rgba(255,255,255,.12); }
+    .breakdown-card--accent .bc-icon svg { color: var(--gold); }
+    .bc-icon {
+      width: 50px; height: 50px; border-radius: 12px;
+      background: var(--teal-light);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .bc-icon svg { color: var(--teal); }
+    .breakdown-card h3 { font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: .5rem; }
+    .breakdown-card p { font-size: .875rem; color: var(--ink-soft); line-height: 1.7; }
+
+    /* ─── SPLIT: ADMIN & STUDENT ROLES ──────────────── */
+    .roles-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem; margin-top: 3rem;
+    }
+    .role-card {
+      border-radius: 18px; padding: 2.5rem;
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .role-card--admin { background: var(--teal-dark); }
+    .role-card--student { background: var(--mist); }
+    .role-card::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 180px; height: 180px; border-radius: 50%;
+    }
+    .role-card--admin::before { background: rgba(255,255,255,.05); }
+    .role-card--student::before { background: rgba(31,99,144,.06); }
+    .role-badge {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-size: .72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: .1em;
+      padding: .35rem .85rem; border-radius: 20px;
+      margin-bottom: 1.25rem;
+    }
+    .role-badge--admin { background: rgba(122,183,224,.2); color: var(--gold); }
+    .role-badge--student { background: var(--teal-light); color: var(--teal); }
+    .role-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; font-weight: 700; margin-bottom: .75rem;
+    }
+    .role-card--admin h3 { color: var(--white); }
+    .role-card--student h3 { color: var(--ink); }
+    .role-list { display: flex; flex-direction: column; gap: .85rem; margin-top: 1.25rem; }
+    .role-item { display: flex; gap: .85rem; align-items: flex-start; }
+    .role-dot {
+      flex-shrink: 0; width: 8px; height: 8px; border-radius: 50%;
+      margin-top: .45rem;
+    }
+    .role-card--admin .role-dot { background: var(--gold); }
+    .role-card--student .role-dot { background: var(--teal); }
+    .role-card--admin .role-item p { font-size: .875rem; color: rgba(255,255,255,.8); line-height: 1.65; }
+    .role-card--student .role-item p { font-size: .875rem; color: var(--ink-soft); line-height: 1.65; }
+
+    /* ─── WHAT'S NOT ON THE PLATFORM ────────────────── */
+    .nolist-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem; margin-top: 3rem;
+    }
+    .no-card {
+      border-radius: 14px; padding: 1.5rem;
+      border: 1px dashed var(--border); text-align: center;
+      background: var(--white);
+    }
+    .no-card__x {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: #fef2f2; margin: 0 auto 1rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .no-card__x svg { color: #dc2626; }
+    .no-card h4 { font-size: .9rem; font-weight: 700; color: var(--ink); margin-bottom: .35rem; }
+    .no-card p { font-size: .8rem; color: var(--ink-soft); line-height: 1.6; }
+
+    /* ─── SPLIT: VISUAL + COPY ───────────────────────── */
+    .split-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .split-img-wrap { border-radius: 18px; overflow: hidden; box-shadow: 0 16px 48px rgba(11,27,47,.12); }
+    .split-img { width: 100%; height: 400px; object-fit: cover; }
+    .check-list { display: flex; flex-direction: column; gap: 1.1rem; margin-top: 1.75rem; }
+    .check-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .check-icon {
+      flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+      background: var(--teal-light);
+      display: flex; align-items: center; justify-content: center; margin-top: .2rem;
+    }
+    .check-icon svg { color: var(--teal); }
+    .check-item p { font-size: .9rem; color: var(--ink-soft); line-height: 1.65; }
+    .check-item strong { color: var(--ink); }
+
+    /* ─── CTA STRIP ──────────────────────────────────── */
+    .cta-strip {
+      background: linear-gradient(120deg, var(--teal-dark), var(--teal));
+      border-radius: 20px; padding: 3.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap; position: relative; overflow: hidden;
+    }
+    .cta-strip::before {
+      content: ''; position: absolute; right: -80px; top: -80px;
+      width: 280px; height: 280px; background: rgba(255,255,255,.05); border-radius: 50%;
+    }
+    .cta-strip__title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 700; color: var(--white); line-height: 1.2;
+    }
+    .cta-strip__sub { font-size: .9rem; color: rgba(255,255,255,.72); margin-top: .4rem; }
+    .cta-strip__actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    footer { background: var(--ink); padding: 4rem 2rem 2rem; color: rgba(255,255,255,.7); }
+    .footer__grid {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem; padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .footer__brand img { height: 52px; width: auto; margin-bottom: 1rem; display: block; }
+    .footer__brand p { font-size: .85rem; line-height: 1.7; max-width: 260px; }
+    .footer__col h4 { color: var(--white); font-size: .82rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1rem; }
+    .footer__col li { margin-bottom: .6rem; }
+    .footer__col a { font-size: .85rem; transition: color .2s; }
+    .footer__col a:hover { color: var(--gold); }
+    .footer__bottom {
+      max-width: 1240px; margin: 0 auto; padding-top: 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem; font-size: .8rem;
+    }
+    .footer__bottom a { color: rgba(255,255,255,.5); transition: color .2s; }
+    .footer__bottom a:hover { color: var(--gold); }
+    .footer__gold { color: var(--gold); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 960px) {
+      .timeline__steps::before { left: 28px; }
+      .tl-step { grid-template-columns: 56px 1fr; gap: 0 1.25rem; }
+      .tl-step__center { padding-top: 1.25rem; grid-column: 1; grid-row: 1; }
+      .tl-step__content { grid-column: 2; grid-row: 1; }
+      .tl-step__empty { display: none; }
+      .tl-step--right .tl-step__content { grid-column: 2; grid-row: 1; }
+      .tl-step--right .tl-step__center { grid-column: 1; grid-row: 1; }
+      .tl-step--right .tl-step__empty { display: none; }
+      .breakdown-grid { grid-template-columns: 1fr 1fr; }
+      .nolist-grid { grid-template-columns: 1fr 1fr; }
+      .roles-grid, .split-grid { grid-template-columns: 1fr; }
+      .footer__grid { grid-template-columns: 1fr 1fr; }
+      .nav__links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .breakdown-grid { grid-template-columns: 1fr; }
+      .nolist-grid { grid-template-columns: 1fr 1fr; }
+      .footer__grid { grid-template-columns: 1fr; }
+      .cta-strip { text-align: center; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══════════════════════════════════════════ -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <img src="assets/logos/learning-hub-logo.png" alt="The Professional Learning Hub" />
+    </a>
+    <div class="nav__links">
+      <a href="students.html" class="nav__link">Students</a>
+      <a href="hiw.html" class="nav__link active">How It Works</a>
+      <a href="wlh.html" class="nav__link">Why Learning Hub</a>
+      <div class="nav__dropdown">
+        <span class="nav__link nav__dropdown-toggle">
+          Login
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+        <div class="nav__dropdown-menu">
+          <a href="login.html">Student Login</a>
+          <a href="adlogin.html">Admin Login</a>
+        </div>
+      </div>
+    </div>
+    <a href="signup.html" class="nav__cta">Get Started →</a>
+  </div>
+</nav>
+
+<!-- ═══ PAGE HERO ══════════════════════════════════════ -->
+<section class="page-hero">
+  <div class="page-hero__inner">
+    <div class="page-hero__eyebrow">The Full Picture</div>
+    <h1 class="page-hero__title">
+      Simple by Design.<br />
+      <span>Powerful</span> in Practice.
+    </h1>
+    <p class="page-hero__sub">
+      The Professional Learning Hub removes everything that gets in the way of learning. 
+      Here's exactly how the platform works — from enrolment to certification.
+    </p>
+    <div class="page-hero__actions">
+      <a href="signup.html" class="btn-gold">
+        Get Started
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="login.html" class="btn-outline">Student Login</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STEP-BY-STEP TIMELINE ══════════════════════════ -->
+<section class="timeline">
+  <div class="timeline__inner">
+    <div class="timeline__head reveal">
+      <p class="section-label">The Process</p>
+      <h2 class="section-title">From Application to Certification</h2>
+      <p class="section-sub" style="margin:0 auto;">Six clear steps. No ambiguity, no unnecessary complexity — just a structured path from enrolment to your professional certificate.</p>
+    </div>
+
+    <div class="timeline__steps">
+
+      <!-- Step 1 -->
+      <div class="tl-step reveal">
+        <div class="tl-step__content">
+          <div class="tl-step__icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </div>
+          <h3>Submit Your Application</h3>
+          <p>Begin by completing the enrolment form on our Get Started page. Provide your details and the programme you wish to join. This is your first step toward becoming an approved student.</p>
+          <span class="tl-step__tag">Open to All</span>
+        </div>
+        <div class="tl-step__center">
+          <div class="tl-step__bubble">1</div>
+        </div>
+        <div class="tl-step__empty"></div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="tl-step tl-step--right reveal">
+        <div class="tl-step__empty"></div>
+        <div class="tl-step__center">
+          <div class="tl-step__bubble">2</div>
+        </div>
+        <div class="tl-step__content">
+          <div class="tl-step__icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Administrator Review & Approval</h3>
+          <p>Your application is reviewed by a programme administrator. Once approved, you will receive your login credentials via email. Access to the platform is granted only to verified, approved applicants.</p>
+          <span class="tl-step__tag">Admin Controlled</span>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="tl-step reveal">
+        <div class="tl-step__content">
+          <div class="tl-step__icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>Log In to Your Student Dashboard</h3>
+          <p>Use your admin-issued credentials to access your private student dashboard. Your dashboard is your central hub — where all your study materials, exam access, and progress tracking live.</p>
+          <span class="tl-step__tag">Secure Access</span>
+        </div>
+        <div class="tl-step__center">
+          <div class="tl-step__bubble">3</div>
+        </div>
+        <div class="tl-step__empty"></div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="tl-step tl-step--right reveal">
+        <div class="tl-step__empty"></div>
+        <div class="tl-step__center">
+          <div class="tl-step__bubble">4</div>
+        </div>
+        <div class="tl-step__content">
+          <div class="tl-step__icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <h3>Access & Read Your Study Materials</h3>
+          <p>Study documents are uploaded and organised by your administrator, sorted by module and subject. Read at your own pace — early morning, lunch break, or late at night. There are no timetables to follow.</p>
+          <span class="tl-step__tag">Self-Paced</span>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="tl-step reveal">
+        <div class="tl-step__content">
+          <div class="tl-step__icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <h3>Sit Your Examination</h3>
+          <p>When you are confident in the material, take your exam directly on the platform. Examinations are created and managed by your administrator — timed, secure, and submitted within the platform itself.</p>
+          <span class="tl-step__tag">Sit When Ready</span>
+        </div>
+        <div class="tl-step__center">
+          <div class="tl-step__bubble tl-step__bubble--gold">5</div>
+        </div>
+        <div class="tl-step__empty"></div>
+      </div>
+
+      <!-- Step 6 -->
+      <div class="tl-step tl-step--right reveal">
+        <div class="tl-step__empty"></div>
+        <div class="tl-step__center">
+          <div class="tl-step__bubble tl-step__bubble--gold">6</div>
+        </div>
+        <div class="tl-step__content">
+          <div class="tl-step__icon">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/><polyline points="16 11 17.5 13 21 9.5"/></svg>
+          </div>
+          <h3>Receive Your Certificate</h3>
+          <p>After your exam is reviewed by the administrator, your results are released and your professional certificate is issued. It is a credible, verified record of your achievement in the programme.</p>
+          <span class="tl-step__tag">Professionally Certified</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHAT THE PLATFORM CONTAINS ═════════════════════ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="reveal" style="text-align:center; max-width:620px; margin:0 auto 0;">
+      <p class="section-label">Platform Breakdown</p>
+      <h2 class="section-title">What's Inside the Platform</h2>
+      <p class="section-sub" style="margin:0 auto;">The platform is built around two core functions — study materials and examinations. Everything else supports these two things.</p>
+    </div>
+    <div class="breakdown-grid">
+
+      <div class="breakdown-card reveal">
+        <div class="bc-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <h3>Study Materials</h3>
+        <p>Written documents uploaded by the administrator, organised by module. Students read them directly on the platform at any time, from any device.</p>
+      </div>
+
+      <div class="breakdown-card breakdown-card reveal">
+        <div class="bc-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        </div>
+        <h3>Examinations</h3>
+        <p>Exams are set, scheduled, and managed by the administrator. Students sit them online when ready and results are released after admin review.</p>
+      </div>
+
+      <div class="breakdown-card reveal">
+        <div class="bc-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Progress Tracker</h3>
+        <p>Students can see what they have read, what is pending, and their exam history — giving a clear view of where they stand in their programme.</p>
+      </div>
+
+      <div class="breakdown-card reveal">
+        <div class="bc-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Secure Student Accounts</h3>
+        <p>Every student has a private, credential-protected account. Enrolment is by approval only — access is never open or self-registered without admin clearance.</p>
+      </div>
+
+      <div class="breakdown-card reveal">
+        <div class="bc-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <h3>Student Profile</h3>
+        <p>Your personal details, enrolled programme, and certificate records are maintained within your profile — accessible whenever you need them.</p>
+      </div>
+
+      <div class="breakdown-card reveal">
+        <div class="bc-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.35 2 2 0 0 1 3.62 1.13h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <h3>Contact Admin</h3>
+        <p>Need clarification on a module or exam? Students can reach their programme administrator directly through the platform for support.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ WHAT'S NOT ON THE PLATFORM ═════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="reveal" style="max-width:620px;">
+      <p class="section-label">What We Don't Do</p>
+      <h2 class="section-title">No Distractions. No Unnecessary Features.</h2>
+      <p class="section-sub">The Professional Learning Hub is intentionally lean. We removed everything that distracts from focused, professional learning.</p>
+    </div>
+    <div class="nolist-grid">
+
+      <div class="no-card reveal">
+        <div class="no-card__x">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <h4>No Videos</h4>
+        <p>No video lectures or recordings. Learning is done through written materials only.</p>
+      </div>
+
+      <div class="no-card reveal">
+        <div class="no-card__x">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <h4>No Voice Notes</h4>
+        <p>No audio content, no voice recordings, no podcasts. Text-based study only.</p>
+      </div>
+
+      <div class="no-card reveal">
+        <div class="no-card__x">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <h4>No Live Sessions</h4>
+        <p>No webinars, no scheduled classes, no live calls. Study entirely on your own schedule.</p>
+      </div>
+
+      <div class="no-card reveal">
+        <div class="no-card__x">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <h4>No Open Enrolment</h4>
+        <p>The platform is not publicly open. Every student must be reviewed and approved before gaining access.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ADMIN vs STUDENT ROLES ══════════════════════════ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="reveal" style="max-width:600px; margin-bottom:3rem;">
+      <p class="section-label">Two Roles, One Platform</p>
+      <h2 class="section-title">Administrators & Students — Each With a Clear Role</h2>
+      <p class="section-sub">The platform operates through a clear division of responsibilities between administrators and students.</p>
+    </div>
+    <div class="roles-grid">
+
+      <div class="role-card role-card--admin reveal">
+        <div class="role-badge role-badge--admin">Administrator</div>
+        <h3>What Admins Manage</h3>
+        <ul class="role-list">
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Review and approve student enrolment applications</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Upload and organise study materials by module and programme</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Create, schedule, and release examinations to enrolled students</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Review submitted exam answers and publish results</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Issue professional certificates to successful students</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Manage student accounts and programme access levels</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="role-card role-card--student reveal">
+        <div class="role-badge role-badge--student">Student</div>
+        <h3>What Students Do</h3>
+        <ul class="role-list">
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Apply for enrolment and await administrator approval</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Log in securely with admin-issued credentials</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Read assigned study materials at their own pace</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Track reading progress and module completion</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Sit examinations on the platform when ready</p>
+          </li>
+          <li class="role-item">
+            <div class="role-dot"></div>
+            <p>Receive results and collect their certificate upon passing</p>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ VISUAL SPLIT: DESIGNED FOR PROFESSIONALS ═══════ -->
+<section class="section">
+  <div class="container">
+    <div class="split-grid">
+      <div class="split-img-wrap reveal">
+        <img class="split-img" src="assets/images/tplh10.jpg" alt="Adult professional studying at desk" />
+      </div>
+      <div class="reveal">
+        <p class="section-label">Built for Adults</p>
+        <h2 class="section-title">Designed Around Your Professional Life</h2>
+        <p class="section-sub">Unlike platforms built for students in a classroom, The Professional Learning Hub fits around a working adult's schedule and expectations.</p>
+        <ul class="check-list">
+          <li class="check-item">
+            <div class="check-icon">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>No mandatory attendance</strong> — read when it suits you, not when a schedule dictates.</p>
+          </li>
+          <li class="check-item">
+            <div class="check-icon">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Works on any device</strong> — desktop, tablet, or phone. Study from the office or at home.</p>
+          </li>
+          <li class="check-item">
+            <div class="check-icon">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Credible certification</strong> — your certificate is issued by a verified administrator, not auto-generated.</p>
+          </li>
+          <li class="check-item">
+            <div class="check-icon">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Private and secure</strong> — your learning environment is shared only with other approved professionals.</p>
+          </li>
+        </ul>
+        <a href="signup.html" class="btn-primary" style="margin-top:2rem;">
+          Start Your Application
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ════════════════════════════════════════════ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="cta-strip reveal">
+      <div>
+        <h2 class="cta-strip__title">Ready to Get Started?</h2>
+        <p class="cta-strip__sub">Submit your application and join a focused community of adult professionals.</p>
+      </div>
+      <div class="cta-strip__actions">
+        <a href="signup.html" class="btn-gold">
+          Apply Now
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="students.html" class="btn-outline">Learn About Students</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════ -->
+<footer>
+  <div class="footer__grid">
+    <div class="footer__brand">
+      <img src="assets/logos/learning-hub-footer.png" alt="The Professional Learning Hub"
+           onerror="this.onerror=null;this.src='assets/logos/learning-hub-logo.png';" />
+      <p>A dedicated platform for adult professionals to access study materials and sit examinations — securely, efficiently, and at their own pace.</p>
+    </div>
+    <nav class="footer__col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="students.html">Students</a></li>
+        <li><a href="hiw.html">How It Works</a></li>
+        <li><a href="wlh.html">Why Learning Hub</a></li>
+        <li><a href="signup.html">Get Started</a></li>
+      </ul>
+    </nav>
+    <nav class="footer__col">
+      <h4>Access</h4>
+      <ul>
+        <li><a href="login.html">Student Login</a></li>
+        <li><a href="adlogin.html">Admin Login</a></li>
+        <li><a href="signup.html">Enrol Now</a></li>
+      </ul>
+    </nav>
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:info@tplhub.com">info@tplhub.com</a></li>
+        <li style="font-size:.85rem;line-height:1.6;">For enrolment enquiries, contact your programme administrator directly.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>© 2026 <span class="footer__gold">The Professional Learning Hub</span>. All rights reserved.</span>
+    <div style="display:flex;gap:1.5rem;">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ SCRIPTS ════════════════════════════════════════ -->
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

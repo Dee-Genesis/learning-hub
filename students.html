@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="assets/logos/learning-hub-footer.png" />
+  <title>Students – The Professional Learning Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── TOKENS ────────────────────────────────────── */
+    :root {
+      --teal:       #1f6390;
+      --teal-dark:  #1b3d5c;
+      --teal-light: #eaf1f9;
+      --green:      #0f2c44;
+      --gold:       #7ab7e0;
+      --gold-light: #dce6f0;
+      --ink:        #0b1b2f;
+      --ink-soft:   #1f3a57;
+      --mist:       #f8fafc;
+      --white:      #ffffff;
+      --border:     #e9edf2;
+      --nav-h:      76px;
+    }
+
+    /* ─── RESET ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--ink); background: var(--white); line-height: 1.6; }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ─── NAV ────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex; align-items: center;
+      box-shadow: 0 2px 12px rgba(14,107,107,.07);
+    }
+    .nav__inner {
+      width: 100%; max-width: 1240px; margin: 0 auto;
+      padding: 0 2rem;
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .nav__logo { flex-shrink: 0; }
+    .nav__logo img { height: 48px; width: auto; }
+    .nav__links { display: flex; align-items: center; gap: .25rem; margin-left: auto; }
+    .nav__link {
+      font-size: .875rem; font-weight: 500; color: var(--ink-soft);
+      padding: .5rem .85rem; border-radius: 6px;
+      transition: color .2s, background .2s; white-space: nowrap;
+    }
+    .nav__link:hover, .nav__link.active { color: var(--teal); background: var(--teal-light); }
+    .nav__dropdown { position: relative; }
+    .nav__dropdown-toggle { display: flex; align-items: center; gap: .35rem; cursor: pointer; }
+    .nav__dropdown-toggle svg { transition: transform .2s; }
+    .nav__dropdown:hover .nav__dropdown-toggle svg { transform: rotate(180deg); }
+    .nav__dropdown-menu {
+      display: none; position: absolute; top: calc(100% + .5rem); left: 0;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; padding: .5rem; min-width: 180px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+    }
+    .nav__dropdown:hover .nav__dropdown-menu { display: block; }
+    .nav__dropdown-menu a {
+      display: block; padding: .6rem 1rem;
+      font-size: .875rem; font-weight: 500; color: var(--ink-soft);
+      border-radius: 6px; transition: background .2s, color .2s;
+    }
+    .nav__dropdown-menu a:hover { background: var(--teal-light); color: var(--teal); }
+    .nav__cta {
+      margin-left: 1rem;
+      display: inline-flex; align-items: center;
+      background: var(--teal); color: var(--white);
+      font-size: .875rem; font-weight: 600;
+      padding: .6rem 1.4rem; border-radius: 8px;
+      transition: background .2s, transform .15s; white-space: nowrap;
+    }
+    .nav__cta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    /* ─── SHARED SECTION STYLES ─────────────────────── */
+    .section { padding: 5rem 2rem; }
+    .section--alt { background: var(--mist); }
+    .section--dark { background: var(--teal-dark); }
+    .container { max-width: 1240px; margin: 0 auto; }
+    .section-label {
+      font-size: .72rem; font-weight: 700;
+      color: var(--teal); text-transform: uppercase; letter-spacing: .12em;
+      margin-bottom: .6rem;
+    }
+    .section-label--light { color: var(--gold-light); }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 700; color: var(--ink); line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+    .section-title--light { color: var(--white); }
+    .section-sub { font-size: .975rem; color: var(--ink-soft); max-width: 560px; line-height: 1.75; }
+    .section-sub--light { color: rgba(255,255,255,.75); }
+
+    /* ─── PAGE HERO ──────────────────────────────────── */
+    .page-hero {
+      background: linear-gradient(135deg, var(--green) 0%, var(--teal-dark) 50%, var(--teal) 100%);
+      padding: 5rem 2rem;
+      position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: ''; position: absolute;
+      top: -100px; right: -100px;
+      width: 400px; height: 400px;
+      background: var(--gold); opacity: .07; border-radius: 50%;
+    }
+    .page-hero__inner {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .page-hero__eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(122,183,224,.15);
+      border: 1px solid rgba(122,183,224,.35);
+      color: var(--gold-light);
+      font-size: .72rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .3rem .85rem; border-radius: 20px; margin-bottom: 1.25rem;
+    }
+    .page-hero__eyebrow::before {
+      content: ''; display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--gold); border-radius: 50%;
+    }
+    .page-hero__title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900; color: var(--white); line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    .page-hero__title span { color: var(--gold); }
+    .page-hero__sub {
+      font-size: 1rem; font-weight: 300;
+      color: rgba(255,255,255,.8); line-height: 1.75;
+      max-width: 460px; margin-bottom: 2rem;
+    }
+    .page-hero__img-wrap {
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,.3);
+      position: relative;
+    }
+    .page-hero__img { width: 100%; height: 400px; object-fit: cover; }
+    .page-hero__img-tag {
+      position: absolute; bottom: 1.25rem; left: 1.25rem;
+      background: var(--white); border-radius: 10px;
+      padding: .75rem 1rem;
+      display: flex; align-items: center; gap: .75rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.15);
+    }
+    .page-hero__img-tag-icon {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: var(--teal-light);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .page-hero__img-tag-icon svg { color: var(--teal); }
+    .page-hero__img-tag-text strong { display: block; font-size: .875rem; color: var(--ink); }
+    .page-hero__img-tag-text span { font-size: .75rem; color: var(--ink-soft); }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--teal); color: var(--white);
+      font-size: .95rem; font-weight: 600;
+      padding: .8rem 1.8rem; border-radius: 8px;
+      transition: background .2s, transform .15s;
+    }
+    .btn-primary:hover { background: var(--teal-dark); transform: translateY(-2px); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: .5rem;
+      border: 1.5px solid rgba(255,255,255,.45);
+      color: var(--white);
+      font-size: .95rem; font-weight: 500;
+      padding: .8rem 1.8rem; border-radius: 8px;
+      transition: border-color .2s, background .2s;
+    }
+    .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,.08); }
+
+    /* ─── QUICK STATS ────────────────────────────────── */
+    .stats-bar {
+      background: var(--teal-dark);
+      padding: 2rem;
+    }
+    .stats-bar__inner {
+      max-width: 1240px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-around;
+      flex-wrap: wrap; gap: 2rem;
+    }
+    .stat-item { text-align: center; }
+    .stat-item__n {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem; font-weight: 700; color: var(--gold);
+      line-height: 1;
+    }
+    .stat-item__l {
+      font-size: .78rem; color: rgba(255,255,255,.65);
+      text-transform: uppercase; letter-spacing: .08em;
+      margin-top: .3rem;
+    }
+    .stat-divider { width: 1px; height: 40px; background: rgba(255,255,255,.12); }
+
+    /* ─── HOW IT WORKS FOR STUDENTS ─────────────────── */
+    .hiw-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2rem; margin-top: 3rem;
+    }
+    .hiw-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 2rem;
+      transition: box-shadow .25s, transform .25s;
+    }
+    .hiw-card:hover { box-shadow: 0 12px 36px rgba(31,99,144,.1); transform: translateY(-4px); }
+    .hiw-card__num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem; font-weight: 900;
+      color: var(--teal-light); line-height: 1; margin-bottom: 1rem;
+    }
+    .hiw-card__icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: var(--teal-light);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+    .hiw-card__icon svg { color: var(--teal); }
+    .hiw-card h3 { font-size: 1rem; font-weight: 700; color: var(--ink); margin-bottom: .5rem; }
+    .hiw-card p { font-size: .875rem; color: var(--ink-soft); line-height: 1.7; }
+
+    /* ─── STUDENT EXPERIENCE SPLIT ───────────────────── */
+    .exp-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 5rem; align-items: center;
+    }
+    .exp-grid--reverse { direction: rtl; }
+    .exp-grid--reverse > * { direction: ltr; }
+    .exp-img-wrap {
+      border-radius: 18px; overflow: hidden;
+      position: relative;
+      box-shadow: 0 16px 48px rgba(11,27,47,.12);
+    }
+    .exp-img { width: 100%; height: 380px; object-fit: cover; }
+    .exp-img-accent {
+      position: absolute; bottom: 1.5rem; right: 1.5rem;
+      background: var(--teal);
+      border-radius: 12px; padding: 1rem 1.25rem;
+      color: var(--white);
+    }
+    .exp-img-accent strong {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem; display: block; line-height: 1;
+    }
+    .exp-img-accent span { font-size: .72rem; opacity: .8; text-transform: uppercase; letter-spacing: .06em; }
+    .exp-content { padding: 1rem 0; }
+    .exp-list { margin-top: 1.75rem; display: flex; flex-direction: column; gap: 1.1rem; }
+    .exp-item { display: flex; gap: 1rem; align-items: flex-start; }
+    .exp-check {
+      flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+      background: var(--teal-light);
+      display: flex; align-items: center; justify-content: center;
+      margin-top: .2rem;
+    }
+    .exp-check svg { color: var(--teal); }
+    .exp-item p { font-size: .9rem; color: var(--ink-soft); line-height: 1.65; }
+    .exp-item strong { color: var(--ink); }
+
+    /* ─── REQUIREMENTS / ELIGIBILITY ────────────────── */
+    .req-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .req-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px; padding: 1.75rem;
+      display: flex; gap: 1.25rem;
+      transition: box-shadow .2s;
+    }
+    .req-card:hover { box-shadow: 0 8px 28px rgba(31,99,144,.09); }
+    .req-icon {
+      flex-shrink: 0; width: 50px; height: 50px;
+      border-radius: 12px; background: var(--teal-light);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .req-icon svg { color: var(--teal); }
+    .req-card h3 { font-size: .975rem; font-weight: 700; color: var(--ink); margin-bottom: .4rem; }
+    .req-card p { font-size: .85rem; color: var(--ink-soft); line-height: 1.65; }
+
+    /* ─── DASHBOARD PREVIEW ──────────────────────────── */
+    .dashboard-wrap {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center;
+    }
+    .dashboard-img-wrap {
+      border-radius: 18px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(11,27,47,.15);
+    }
+    .dashboard-img { width: 100%; height: 420px; object-fit: cover; }
+    .feature-pills { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+    .pill {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--teal-light); color: var(--teal);
+      font-size: .8rem; font-weight: 600;
+      padding: .4rem .9rem; border-radius: 20px;
+    }
+    .pill svg { width: 14px; height: 14px; }
+
+    /* ─── FAQ ────────────────────────────────────────── */
+    .faq-list { margin-top: 3rem; max-width: 780px; }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 0;
+    }
+    .faq-item:first-child { border-top: 1px solid var(--border); }
+    .faq-q {
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; gap: 1rem;
+    }
+    .faq-q h3 { font-size: .975rem; font-weight: 600; color: var(--ink); }
+    .faq-icon {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--teal-light);
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, transform .3s;
+    }
+    .faq-icon svg { color: var(--teal); }
+    .faq-item.open .faq-icon { background: var(--teal); transform: rotate(45deg); }
+    .faq-item.open .faq-icon svg { color: var(--white); }
+    .faq-a {
+      font-size: .875rem; color: var(--ink-soft); line-height: 1.75;
+      max-height: 0; overflow: hidden;
+      transition: max-height .35s ease, padding .35s ease;
+    }
+    .faq-item.open .faq-a { max-height: 300px; padding-top: .85rem; }
+
+    /* ─── CTA BANNER ─────────────────────────────────── */
+    .cta-strip {
+      background: linear-gradient(120deg, var(--teal-dark), var(--teal));
+      border-radius: 20px;
+      padding: 3.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 2rem; flex-wrap: wrap; overflow: hidden; position: relative;
+    }
+    .cta-strip::before {
+      content: ''; position: absolute;
+      right: -80px; top: -80px;
+      width: 280px; height: 280px;
+      background: rgba(255,255,255,.05); border-radius: 50%;
+    }
+    .cta-strip__title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 700; color: var(--white); line-height: 1.2;
+    }
+    .cta-strip__sub { font-size: .9rem; color: rgba(255,255,255,.72); margin-top: .4rem; }
+    .cta-strip__actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-gold {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--gold); color: var(--ink);
+      font-size: .9rem; font-weight: 700;
+      padding: .8rem 1.8rem; border-radius: 8px;
+      transition: opacity .2s, transform .15s;
+    }
+    .btn-gold:hover { opacity: .9; transform: translateY(-2px); }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    footer { background: var(--ink); padding: 4rem 2rem 2rem; color: rgba(255,255,255,.7); }
+    .footer__grid {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem; padding-bottom: 3rem;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .footer__brand img { height: 52px; width: auto; margin-bottom: 1rem; display: block; }
+    .footer__brand p { font-size: .85rem; line-height: 1.7; max-width: 260px; }
+    .footer__col h4 { color: var(--white); font-size: .82rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 1rem; }
+    .footer__col li { margin-bottom: .6rem; }
+    .footer__col a { font-size: .85rem; transition: color .2s; }
+    .footer__col a:hover { color: var(--gold); }
+    .footer__bottom {
+      max-width: 1240px; margin: 0 auto;
+      padding-top: 2rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem; font-size: .8rem;
+    }
+    .footer__bottom a { color: rgba(255,255,255,.5); transition: color .2s; }
+    .footer__bottom a:hover { color: var(--gold); }
+    .footer__gold { color: var(--gold); }
+
+    /* ─── SCROLL REVEAL ──────────────────────────────── */
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 960px) {
+      .page-hero__inner, .exp-grid, .dashboard-wrap, .hiw-grid { grid-template-columns: 1fr; }
+      .exp-grid--reverse { direction: ltr; }
+      .req-grid { grid-template-columns: 1fr; }
+      .footer__grid { grid-template-columns: 1fr 1fr; }
+      .nav__links { display: none; }
+      .page-hero__img-wrap { display: none; }
+    }
+    @media (max-width: 600px) {
+      .footer__grid { grid-template-columns: 1fr; }
+      .stats-bar__inner { gap: 1.25rem; }
+      .stat-divider { display: none; }
+      .cta-strip { text-align: center; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══════════════════════════════════════════ -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo">
+      <img src="assets/logos/learning-hub-logo.png" alt="The Professional Learning Hub" />
+    </a>
+    <div class="nav__links">
+      <a href="students.html" class="nav__link active">Students</a>
+      <a href="hiw.html" class="nav__link">How It Works</a>
+      <a href="wlh.html" class="nav__link">Why Learning Hub</a>
+      <div class="nav__dropdown">
+        <span class="nav__link nav__dropdown-toggle">
+          Login
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+        <div class="nav__dropdown-menu">
+          <a href="login.html">Student Login</a>
+          <a href="adlogin.html">Admin Login</a>
+        </div>
+      </div>
+    </div>
+    <a href="signup.html" class="nav__cta">Get Started →</a>
+  </div>
+</nav>
+
+<!-- ═══ PAGE HERO ══════════════════════════════════════ -->
+<section class="page-hero">
+  <div class="page-hero__inner">
+    <div>
+      <div class="page-hero__eyebrow">For Approved Students</div>
+      <h1 class="page-hero__title">
+        Your Learning.<br />
+        Your <span>Terms.</span>
+      </h1>
+      <p class="page-hero__sub">
+        The Professional Learning Hub puts everything you need in one focused place — 
+        quality study materials curated by your administrator, and exams you can sit 
+        when you're ready. No distractions. No unnecessary complexity.
+      </p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+        <a href="login.html" class="btn-primary">
+          Access Your Dashboard
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="signup.html" class="btn-outline">Apply for Enrolment</a>
+      </div>
+    </div>
+    <div class="page-hero__img-wrap">
+      <img class="page-hero__img" src="assets/images/tplh6.jpg" alt="Professional adult reading study material" />
+      <div class="page-hero__img-tag">
+        <div class="page-hero__img-tag-icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </div>
+        <div class="page-hero__img-tag-text">
+          <strong>Materials Ready</strong>
+          <span>Log in to start reading</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS BAR ══════════════════════════════════════ -->
+<div class="stats-bar">
+  <div class="stats-bar__inner">
+    <div class="stat-item">
+      <div class="stat-item__n">1,200+</div>
+      <div class="stat-item__l">Enrolled Students</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-item__n">85+</div>
+      <div class="stat-item__l">Study Programmes</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-item__n">98%</div>
+      <div class="stat-item__l">Exam Pass Rate</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <div class="stat-item__n">100%</div>
+      <div class="stat-item__l">Self-Paced</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HOW IT WORKS FOR STUDENTS ══════════════════════ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="reveal">
+      <p class="section-label">Your Journey</p>
+      <h2 class="section-title">How the Platform Works for You</h2>
+      <p class="section-sub">Once you're approved and enrolled, the process is straightforward — designed to respect your time as a working professional.</p>
+    </div>
+    <div class="hiw-grid">
+
+      <div class="hiw-card reveal">
+        <div class="hiw-card__num">01</div>
+        <div class="hiw-card__icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3>Log In Securely</h3>
+        <p>Use your admin-issued credentials to access your personal student dashboard. Your account is private and accessible only to you.</p>
+      </div>
+
+      <div class="hiw-card reveal">
+        <div class="hiw-card__num">02</div>
+        <div class="hiw-card__icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <h3>Read Your Materials</h3>
+        <p>Browse and read study documents uploaded by your programme administrator. Materials are neatly organised by module and subject area.</p>
+      </div>
+
+      <div class="hiw-card reveal">
+        <div class="hiw-card__num">03</div>
+        <div class="hiw-card__icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <h3>Study at Your Pace</h3>
+        <p>No timetables to follow. Read in the morning, during your lunch break, or late at night — your materials are available whenever you are.</p>
+      </div>
+
+      <div class="hiw-card reveal">
+        <div class="hiw-card__num">04</div>
+        <div class="hiw-card__icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <h3>Sit Your Exam</h3>
+        <p>When you feel ready, take your examination directly on the platform. Exams are set and managed by your administrator — no third-party redirects.</p>
+      </div>
+
+      <div class="hiw-card reveal">
+        <div class="hiw-card__num">05</div>
+        <div class="hiw-card__icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Track Your Progress</h3>
+        <p>Monitor what you've read and see your exam results directly from your dashboard. Stay informed every step of the way.</p>
+      </div>
+
+      <div class="hiw-card reveal">
+        <div class="hiw-card__num">06</div>
+        <div class="hiw-card__icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <h3>Receive Your Certificate</h3>
+        <p>Pass your exam and receive your professional certificate — a credible, administrator-verified record of your achievement.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STUDENT EXPERIENCE: MATERIALS ══════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="exp-grid">
+      <div class="exp-img-wrap reveal">
+        <img class="exp-img" src="assets/images/tplh7.jpg" alt="Professional reading documents on a desk" />
+        <div class="exp-img-accent">
+          <strong>Read-Only</strong>
+          <span>Focus Mode</span>
+        </div>
+      </div>
+      <div class="exp-content reveal">
+        <p class="section-label">Study Materials</p>
+        <h2 class="section-title">Everything You Need to Read, Right Where You Need It</h2>
+        <p class="section-sub">Your administrator uploads all study documents directly to the platform. No hunting through emails, no external drives — just open the platform and read.</p>
+        <ul class="exp-list">
+          <li class="exp-item">
+            <div class="exp-check">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Organised by module</strong> — materials are sorted clearly so you always know what to read next.</p>
+          </li>
+          <li class="exp-item">
+            <div class="exp-check">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Always accessible</strong> — log in from any device, any time, and pick up exactly where you left off.</p>
+          </li>
+          <li class="exp-item">
+            <div class="exp-check">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Text-based only</strong> — no videos, no audio, no distractions. Clean reading materials built for focused study.</p>
+          </li>
+          <li class="exp-item">
+            <div class="exp-check">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Admin-curated quality</strong> — only vetted, relevant content is uploaded. No noise, no irrelevant material.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STUDENT EXPERIENCE: EXAMS ══════════════════════ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="exp-grid exp-grid--reverse">
+      <div class="exp-img-wrap reveal">
+        <img class="exp-img" src="assets/images/tplh8.jpg" alt="Professional completing an exam on a laptop" />
+        <div class="exp-img-accent">
+          <strong>98%</strong>
+          <span>Pass Rate</span>
+        </div>
+      </div>
+      <div class="exp-content reveal">
+        <p class="section-label">Examinations</p>
+        <h2 class="section-title">Sit Your Exam With Confidence</h2>
+        <p class="section-sub">Examinations are created and managed entirely by your programme administrator. When you're prepared, simply open your dashboard and begin.</p>
+        <ul class="exp-list">
+          <li class="exp-item">
+            <div class="exp-check">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>You decide when you're ready</strong> — no forced exam dates. Sit when you feel confident in the material.</p>
+          </li>
+          <li class="exp-item">
+            <div class="exp-check">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Fully online</strong> — complete your exam directly within the platform. No test centres, no travel required.</p>
+          </li>
+          <li class="exp-item">
+            <div class="exp-check">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Secure and monitored</strong> — exam integrity is maintained through admin controls and secure submission.</p>
+          </li>
+          <li class="exp-item">
+            <div class="exp-check">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <p><strong>Results released promptly</strong> — your score is made available by your administrator after review.</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ELIGIBILITY / REQUIREMENTS ═════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="reveal" style="max-width:600px;">
+      <p class="section-label">Who Can Join</p>
+      <h2 class="section-title">Student Eligibility & Requirements</h2>
+      <p class="section-sub">The Professional Learning Hub is a controlled environment. Access is not open to the public — enrolment requires administrator approval.</p>
+    </div>
+    <div class="req-grid">
+      <div class="req-card reveal">
+        <div class="req-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div>
+          <h3>Adults Only</h3>
+          <p>This platform is exclusively for adult learners. All enrolled students must be 18 years of age or older.</p>
+        </div>
+      </div>
+      <div class="req-card reveal">
+        <div class="req-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div>
+          <h3>Administrator Approval</h3>
+          <p>Enrolment is only granted after your application has been reviewed and approved by a programme administrator.</p>
+        </div>
+      </div>
+      <div class="req-card reveal">
+        <div class="req-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div>
+          <h3>Device & Internet Access</h3>
+          <p>You need a computer, tablet, or smartphone with a stable internet connection to access your materials and sit exams.</p>
+        </div>
+      </div>
+      <div class="req-card reveal">
+        <div class="req-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        </div>
+        <div>
+          <h3>Valid Contact Details</h3>
+          <p>A working email address is required for account creation, communication from your administrator, and exam notifications.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ DASHBOARD PREVIEW ═══════════════════════════════ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="dashboard-wrap">
+      <div class="reveal">
+        <p class="section-label">Your Dashboard</p>
+        <h2 class="section-title">A Clean, Focused Student Portal</h2>
+        <p class="section-sub">Your student dashboard is built for clarity. Everything you need is immediately visible — no clutter, no unnecessary features.</p>
+        <div class="feature-pills">
+          <span class="pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Study Materials
+          </span>
+          <span class="pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/></svg>
+            Exams
+          </span>
+          <span class="pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Progress Tracker
+          </span>
+          <span class="pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Profile
+          </span>
+          <span class="pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.35 2 2 0 0 1 3.62 1.13h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Contact Admin
+          </span>
+          <span class="pill">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+            Exam Results
+          </span>
+        </div>
+        <a href="login.html" class="btn-primary" style="margin-top:2rem;">
+          Go to Your Dashboard
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+      <div class="dashboard-img-wrap reveal">
+        <img class="dashboard-img" src="assets/images/tplh9.jpg" alt="Professional using laptop to access learning portal" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FAQ ══════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="reveal" style="max-width:600px;">
+      <p class="section-label">Common Questions</p>
+      <h2 class="section-title">Student FAQs</h2>
+      <p class="section-sub">Answers to what students ask most before and after enrolment.</p>
+    </div>
+    <div class="faq-list reveal">
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <h3>How do I get access to the platform?</h3>
+          <div class="faq-icon">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+        </div>
+        <div class="faq-a">You apply through the Get Started page and your application is reviewed by an administrator. Once approved, you will receive your login credentials via email. Access is not automatic — it requires administrator confirmation.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <h3>Is there a timetable I must follow?</h3>
+          <div class="faq-icon">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+        </div>
+        <div class="faq-a">No. The platform is fully self-paced. You read your study materials whenever it suits you and sit your exam when you feel prepared. There are no mandatory sessions, no scheduled classes, and no live commitments.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <h3>Are there videos or audio recordings available?</h3>
+          <div class="faq-icon">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+        </div>
+        <div class="faq-a">No. The Professional Learning Hub is strictly a text-based reading and examination platform. There are no videos, no voice notes, and no live sessions. All learning materials are written documents uploaded by the administrator.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <h3>How will I know when my exam is available?</h3>
+          <div class="faq-icon">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+        </div>
+        <div class="faq-a">Your dashboard will display available exams as they are released by your administrator. You may also receive a notification via email. You can then log in and begin when you are ready.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <h3>What happens after I pass my exam?</h3>
+          <div class="faq-icon">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+        </div>
+        <div class="faq-a">Your results are reviewed by the administrator and a professional certificate is issued confirming your achievement. The certificate is a credible record of your successful completion of the programme.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">
+          <h3>Can I access the platform on my phone?</h3>
+          <div class="faq-icon">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+        </div>
+        <div class="faq-a">Yes. The platform is fully responsive and works on smartphones, tablets, and desktop computers. You can read your materials and complete your exams from any device with an internet connection.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA ═══════════════════════════════════════════ -->
+<section class="section section--alt">
+  <div class="container">
+    <div class="cta-strip reveal">
+      <div>
+        <h2 class="cta-strip__title">Ready to Start Your Programme?</h2>
+        <p class="cta-strip__sub">Apply for enrolment today. Approval is fast and your materials will be waiting.</p>
+      </div>
+      <div class="cta-strip__actions">
+        <a href="signup.html" class="btn-gold">
+          Apply Now
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a href="login.html" class="btn-outline">Student Login</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════ -->
+<footer>
+  <div class="footer__grid">
+    <div class="footer__brand">
+      <img src="assets/logos/learning-hub-footer.png" alt="The Professional Learning Hub"
+           onerror="this.onerror=null;this.src='assets/logos/learning-hub-logo.png';" />
+      <p>A dedicated platform for adult professionals to access study materials and sit examinations — securely, efficiently, and at their own pace.</p>
+    </div>
+    <nav class="footer__col">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="students.html">Students</a></li>
+        <li><a href="hiw.html">How It Works</a></li>
+        <li><a href="wlh.html">Why Learning Hub</a></li>
+        <li><a href="signup.html">Get Started</a></li>
+      </ul>
+    </nav>
+    <nav class="footer__col">
+      <h4>Access</h4>
+      <ul>
+        <li><a href="login.html">Student Login</a></li>
+        <li><a href="adlogin.html">Admin Login</a></li>
+        <li><a href="signup.html">Enrol Now</a></li>
+      </ul>
+    </nav>
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:info@tplhub.com">info@tplhub.com</a></li>
+        <li style="font-size:.85rem;line-height:1.6;">For enrolment enquiries, contact your programme administrator directly.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>© 2024 <span class="footer__gold">The Professional Learning Hub</span>. All rights reserved.</span>
+    <div style="display:flex;gap:1.5rem;">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ SCRIPTS ════════════════════════════════════════ -->
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.parentElement;
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    });
+  });
+</script>
+</body>
+</html>

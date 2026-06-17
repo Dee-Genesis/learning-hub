@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/jpg" href="assets/logos/learning-hub-footer.png">
+  <title>Create Account — The Professional Learning Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;900&family=Inter:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── DESIGN TOKENS ─────────────────────────────── */
+    :root {
+      --teal:       #1f6390;
+      --teal-dark:  #1b3d5c;
+      --teal-light: #eaf1f9;
+      --green:      #0f2c44;
+      --gold:       #7ab7e0;
+      --gold-light: #dce6f0;
+      --ink:        #0b1b2f;
+      --ink-soft:   #1f3a57;
+      --mist:       #f8fafc;
+      --white:      #ffffff;
+      --border:     #e9edf2;
+      --nav-h:      76px;
+      --error:      #c0392b;
+      --success:    #1a6b3c;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', sans-serif;
+      color: var(--ink);
+      background: var(--mist);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+
+    /* ─── NAV ────────────────────────────────────────── */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      height: var(--nav-h);
+      display: flex; align-items: center;
+      box-shadow: 0 2px 12px rgba(14,107,107,.07);
+    }
+    .nav__inner {
+      width: 100%; max-width: 1240px; margin: 0 auto;
+      padding: 0 2rem;
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .nav__logo { flex-shrink: 0; display: flex; align-items: center; gap: .75rem; }
+    .nav__logo img { height: 48px; width: auto; }
+    .nav__links { display: flex; align-items: center; gap: .25rem; margin-left: auto; }
+    .nav__link {
+      font-size: .875rem; font-weight: 500; color: var(--ink-soft);
+      padding: .5rem .85rem; border-radius: 6px;
+      transition: color .2s, background .2s; white-space: nowrap;
+    }
+    .nav__link:hover { color: var(--teal); background: var(--teal-light); }
+    .nav__dropdown { position: relative; }
+    .nav__dropdown-toggle { display: flex; align-items: center; gap: .35rem; cursor: pointer; }
+    .nav__dropdown-toggle svg { transition: transform .2s; }
+    .nav__dropdown:hover .nav__dropdown-toggle svg { transform: rotate(180deg); }
+    .nav__dropdown-menu {
+      display: none; position: absolute; top: calc(100% + .5rem); left: 0;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 10px; padding: .5rem; min-width: 180px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.1);
+    }
+    .nav__dropdown:hover .nav__dropdown-menu { display: block; }
+    .nav__dropdown-menu a {
+      display: block; padding: .6rem 1rem;
+      font-size: .875rem; font-weight: 500; color: var(--ink-soft);
+      border-radius: 6px; transition: background .2s, color .2s;
+    }
+    .nav__dropdown-menu a:hover { background: var(--teal-light); color: var(--teal); }
+    .nav__cta {
+      margin-left: 1rem; display: inline-flex; align-items: center;
+      background: var(--teal); color: var(--white);
+      font-size: .875rem; font-weight: 600;
+      padding: .6rem 1.4rem; border-radius: 8px;
+      transition: background .2s, transform .15s; white-space: nowrap;
+    }
+    .nav__cta:hover { background: var(--teal-dark); transform: translateY(-1px); }
+
+    /* ─── PAGE LAYOUT ───────────────────────────────── */
+    .signup-page {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - var(--nav-h));
+    }
+
+    /* ─── LEFT PANEL ─────────────────────────────────── */
+    .signup-panel {
+      background: linear-gradient(160deg, #0b1b2f 0%, var(--teal-dark) 60%, var(--teal) 100%);
+      padding: 4rem 3.5rem;
+      display: flex; flex-direction: column; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .signup-panel::before {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 320px; height: 320px;
+      background: var(--gold); opacity: .07; border-radius: 50%;
+    }
+    .signup-panel::after {
+      content: '';
+      position: absolute; bottom: -80px; left: 20%;
+      width: 200px; height: 200px;
+      background: var(--white); opacity: .04; border-radius: 50%;
+    }
+    .panel__eyebrow {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: rgba(122,183,224,.18);
+      border: 1px solid rgba(122,183,224,.35);
+      color: #cfe4f4;
+      font-size: .7rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: .3rem .85rem; border-radius: 20px;
+      margin-bottom: 2rem; width: fit-content;
+    }
+    .panel__eyebrow::before {
+      content: ''; display: inline-block;
+      width: 6px; height: 6px; background: var(--gold); border-radius: 50%;
+    }
+    .panel__headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 900; color: var(--white); line-height: 1.2;
+      margin-bottom: 1.25rem;
+    }
+    .panel__headline span { color: var(--gold); }
+    .panel__sub {
+      font-size: .95rem; font-weight: 300;
+      color: rgba(255,255,255,.75); line-height: 1.75;
+      margin-bottom: 2.5rem; max-width: 380px;
+    }
+    .panel__steps { display: flex; flex-direction: column; gap: 1.25rem; position: relative; z-index: 1; }
+    .panel__step {
+      display: flex; align-items: flex-start; gap: 1rem;
+    }
+    .panel__step-num {
+      flex-shrink: 0;
+      width: 32px; height: 32px;
+      background: rgba(122,183,224,.2);
+      border: 1px solid rgba(122,183,224,.4);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700; color: var(--gold);
+    }
+    .panel__step-text { padding-top: .3rem; }
+    .panel__step-title { font-size: .875rem; font-weight: 600; color: var(--white); }
+    .panel__step-desc { font-size: .8rem; color: rgba(255,255,255,.6); margin-top: .15rem; }
+
+    /* ─── RIGHT PANEL (FORM) ─────────────────────────── */
+    .signup-form-wrap {
+      background: var(--white);
+      padding: 4rem 3.5rem;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .form-header { margin-bottom: 2rem; }
+    .form-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem; font-weight: 700;
+      color: var(--ink); margin-bottom: .4rem;
+    }
+    .form-header p { font-size: .875rem; color: var(--ink-soft); }
+    .form-header a { color: var(--teal); font-weight: 600; }
+    .form-header a:hover { text-decoration: underline; }
+
+    /* ─── FORM FIELDS ───────────────────────────────── */
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .field { margin-bottom: 1.1rem; }
+    .field label {
+      display: block; font-size: .8rem; font-weight: 600;
+      color: var(--ink-soft); margin-bottom: .4rem; letter-spacing: .02em;
+    }
+    .field label .req { color: var(--teal); margin-left: 2px; }
+    .field input,
+    .field select {
+      width: 100%; padding: .7rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: .875rem; color: var(--ink);
+      background: var(--mist);
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      appearance: none;
+    }
+    .field input:focus,
+    .field select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(31,99,144,.12);
+      background: var(--white);
+    }
+    .field input.error { border-color: var(--error); }
+    .field-error {
+      font-size: .75rem; color: var(--error);
+      margin-top: .3rem; display: none;
+    }
+    .field-error.show { display: block; }
+
+    /* password wrapper */
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 2.8rem; }
+    .pw-toggle {
+      position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer;
+      color: var(--ink-soft); padding: .2rem;
+      display: flex; align-items: center;
+    }
+    .pw-toggle:hover { color: var(--teal); }
+
+    /* password strength */
+    .pw-strength { margin-top: .5rem; }
+    .pw-strength-bar {
+      height: 3px; border-radius: 2px;
+      background: var(--border);
+      overflow: hidden; margin-bottom: .25rem;
+    }
+    .pw-strength-fill {
+      height: 100%; border-radius: 2px;
+      width: 0%; transition: width .3s, background .3s;
+    }
+    .pw-strength-label { font-size: .72rem; color: var(--ink-soft); }
+
+    /* select arrow */
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '';
+      position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid var(--ink-soft);
+      pointer-events: none;
+    }
+
+    /* terms */
+    .terms-check {
+      display: flex; align-items: flex-start; gap: .75rem;
+      margin-bottom: 1.5rem;
+    }
+    .terms-check input[type="checkbox"] {
+      width: 16px; height: 16px; flex-shrink: 0; margin-top: .2rem;
+      accent-color: var(--teal); cursor: pointer;
+    }
+    .terms-check label {
+      font-size: .8rem; color: var(--ink-soft); cursor: pointer; line-height: 1.5;
+    }
+    .terms-check a { color: var(--teal); font-weight: 600; }
+
+    /* submit button */
+    .btn-submit {
+      width: 100%; padding: .85rem;
+      background: var(--teal); color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: .95rem; font-weight: 700;
+      border: none; border-radius: 8px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      transition: background .2s, transform .15s;
+    }
+    .btn-submit:hover:not(:disabled) { background: var(--teal-dark); transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+    .btn-submit .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,.35);
+      border-top-color: var(--white);
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      display: none;
+    }
+    .btn-submit.loading .spinner { display: block; }
+    .btn-submit.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* global form error */
+    .form-alert {
+      padding: .8rem 1rem;
+      border-radius: 8px;
+      font-size: .85rem;
+      margin-bottom: 1.25rem;
+      display: none;
+    }
+    .form-alert.error { background: #fdf2f2; border: 1px solid #f5c6c6; color: var(--error); display: flex; align-items: center; gap: .5rem; }
+    .form-alert.success { background: #f0faf5; border: 1px solid #a3d9b8; color: var(--success); display: flex; align-items: center; gap: .5rem; }
+
+    /* ─── SUCCESS STATE ──────────────────────────────── */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 2rem 0;
+    }
+    .success-state.show { display: block; }
+    .success-icon {
+      width: 72px; height: 72px;
+      background: #f0faf5;
+      border: 2px solid #a3d9b8;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    .success-icon svg { color: var(--success); }
+    .success-state h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--ink); margin-bottom: .75rem;
+    }
+    .success-state p { font-size: .9rem; color: var(--ink-soft); line-height: 1.7; max-width: 380px; margin: 0 auto; }
+    .success-state .email-highlight {
+      display: inline-block; background: var(--teal-light);
+      color: var(--teal); font-weight: 600;
+      padding: .1rem .5rem; border-radius: 4px; margin: .5rem 0;
+    }
+    .success-notice {
+      margin-top: 1.5rem;
+      padding: 1rem 1.25rem;
+      background: #fffbf0;
+      border: 1px solid #f0d88a;
+      border-radius: 8px;
+      font-size: .82rem; color: #7a5c00;
+      line-height: 1.6;
+    }
+    .success-notice strong { color: #5a4200; }
+
+    /* ─── FOOTER ─────────────────────────────────────── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,.65);
+      padding: 3rem 2rem 1.5rem;
+    }
+    .footer__grid {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem; padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .footer__brand p { font-size: .875rem; line-height: 1.7; margin-top: 1rem; }
+    .footer__col h4 { font-size: .8rem; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 1rem; }
+    .footer__col ul { display: flex; flex-direction: column; gap: .5rem; }
+    .footer__col ul li a { font-size: .875rem; transition: color .2s; }
+    .footer__col ul li a:hover { color: var(--gold); }
+    .footer__bottom {
+      max-width: 1240px; margin: 1.5rem auto 0;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: .8rem; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer__gold { color: var(--gold); }
+
+    /* ─── RESPONSIVE ─────────────────────────────────── */
+    @media (max-width: 900px) {
+      .signup-page { grid-template-columns: 1fr; }
+      .signup-panel { display: none; }
+      .signup-form-wrap { padding: 2.5rem 1.5rem; }
+      .field-row { grid-template-columns: 1fr; }
+      .footer__grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .footer__grid { grid-template-columns: 1fr; gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ════════════════════════════════════ -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav__inner">
+    <a href="index.html" class="nav__logo" aria-label="The Professional Learning Hub home">
+      <img src="assets/logos/learning-hub-logo.png" alt="The Professional Learning Hub" />
+    </a>
+    <div class="nav__links" role="menubar">
+      <a href="students.html" class="nav__link" role="menuitem">Students</a>
+      <a href="hiw.html" class="nav__link" role="menuitem">How It Works</a>
+      <a href="wlh.html" class="nav__link" role="menuitem">Why Learning Hub</a>
+      <div class="nav__dropdown" role="menuitem" aria-haspopup="true">
+        <span class="nav__link nav__dropdown-toggle">
+          Login
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </span>
+        <div class="nav__dropdown-menu" role="menu">
+          <a href="login.html" role="menuitem">Student Login</a>
+          <a href="adlogin.html" role="menuitem">Admin Login</a>
+        </div>
+      </div>
+    </div>
+    <a href="signup.html" class="nav__cta" aria-label="Get started">Get Started →</a>
+  </div>
+</nav>
+
+<!-- ═══ SIGNUP PAGE ═══════════════════════════════════ -->
+<div class="signup-page">
+
+  <!-- LEFT: Info Panel -->
+  <div class="signup-panel" aria-hidden="true">
+    <div class="panel__eyebrow">Enrolment Request</div>
+    <h1 class="panel__headline">
+      Begin Your<br/>
+      <span>Professional Journey</span>
+    </h1>
+    <p class="panel__sub">
+      Create your account and submit your enrolment request. Our admin team reviews every application before granting access.
+    </p>
+    <div class="panel__steps">
+      <div class="panel__step">
+        <div class="panel__step-num">1</div>
+        <div class="panel__step-text">
+          <div class="panel__step-title">Fill in your details</div>
+          <div class="panel__step-desc">Full name, email, programme, and a secure password.</div>
+        </div>
+      </div>
+      <div class="panel__step">
+        <div class="panel__step-num">2</div>
+        <div class="panel__step-text">
+          <div class="panel__step-title">Verify your email address</div>
+          <div class="panel__step-desc">We'll send a confirmation link to the email you provide.</div>
+        </div>
+      </div>
+      <div class="panel__step">
+        <div class="panel__step-num">3</div>
+        <div class="panel__step-text">
+          <div class="panel__step-title">Await admin approval</div>
+          <div class="panel__step-desc">Our team reviews your request and activates your account.</div>
+        </div>
+      </div>
+      <div class="panel__step">
+        <div class="panel__step-num">4</div>
+        <div class="panel__step-text">
+          <div class="panel__step-title">Access your materials</div>
+          <div class="panel__step-desc">Log in and begin studying at your own pace.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: Form -->
+  <div class="signup-form-wrap">
+    <div class="form-header">
+      <h2>Create Your Account</h2>
+      <p>Already have an account? <a href="login.html">Sign in here</a></p>
+    </div>
+
+    <!-- Global alert -->
+    <div class="form-alert" id="formAlert" role="alert" aria-live="polite"></div>
+
+    <!-- The form -->
+    <div id="formBody">
+      <div class="field-row">
+        <div class="field">
+          <label for="firstName">First Name <span class="req">*</span></label>
+          <input type="text" id="firstName" placeholder="First name" autocomplete="given-name" />
+          <div class="field-error" id="firstNameErr">Please enter your first name.</div>
+        </div>
+        <div class="field">
+          <label for="lastName">Last Name <span class="req">*</span></label>
+          <input type="text" id="lastName" placeholder="Last name" autocomplete="family-name" />
+          <div class="field-error" id="lastNameErr">Please enter your last name.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email Address <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="you@example.com" autocomplete="email" />
+        <div class="field-error" id="emailErr">Please enter a valid email address.</div>
+      </div>
+
+      <div class="field">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="Your phone number" autocomplete="tel" />
+      </div>
+
+      <div class="field">
+        <label for="programme">Course of Study <span class="req">*</span></label>
+        <div class="select-wrap">
+          <select id="programme">
+            <option value="" disabled selected>Select a programme</option>
+
+            <optgroup label="─── Diplomas &amp; Postgraduate (CIML Business School) ───">
+              <option value="diploma-program">Diploma Program</option>
+              <option value="advanced-diploma">Advanced Diploma Program</option>
+              <option value="postgraduate-diploma">Post Graduate Diploma</option>
+              <option value="mba">Master of Business Administration (MBA)</option>
+              <option value="dba">Doctor of Business Administration (DBA)</option>
+            </optgroup>
+
+            <optgroup label="─── MBA / DBA Specialisations (CIML Business School) ───">
+              <option value="spec-business-management">Business Management</option>
+              <option value="spec-strategic-leadership">Strategic Management &amp; Leadership</option>
+              <option value="spec-finance-accounting">Finance &amp; Accounting</option>
+              <option value="spec-marketing">Marketing &amp; Consumer Strategy</option>
+              <option value="spec-human-resources">Human Resource Management</option>
+              <option value="spec-international-business">International Business</option>
+              <option value="spec-healthcare-management">Healthcare Management</option>
+              <option value="spec-project-innovation">Project &amp; Innovation Management</option>
+              <option value="spec-oil-gas">Oil &amp; Gas Management</option>
+              <option value="spec-cybersecurity">Cybersecurity &amp; Digital Business</option>
+              <option value="spec-aviation">Aviation &amp; Transport Management</option>
+              <option value="spec-real-estate">Real Estate &amp; Property Development</option>
+            </optgroup>
+
+            <optgroup label="─── Leadership &amp; Governance Qualifications (CILG) ───">
+              <option value="cilg-level1">Level 1 — Foundation Certificate in Leadership &amp; Governance</option>
+              <option value="cilg-level2">Level 2 — Diploma in Leadership &amp; Governance</option>
+              <option value="cilg-level3">Level 3 — Advanced Diploma in Leadership &amp; Governance (ACILG)</option>
+              <option value="cilg-level4">Level 4 — Executive Diploma in Leadership &amp; Governance (MCILG)</option>
+              <option value="cilg-level5">Level 5 — Chartered Professional in Leadership &amp; Governance (FCILG)</option>
+            </optgroup>
+
+            <optgroup label="─── Professional Certifications (CILG) ───">
+              <option value="caigp">CAIGP — Certified AI Governance Professional</option>
+              <option value="chrm">CHRM — Certified Human Resource Manager</option>
+              <option value="csol">CSOL — Certified Strategic Organisational Leadership</option>
+              <option value="cpage">CPAGE — Certified Public Administration &amp; Governance Expert</option>
+              <option value="cpm">CPM — Certified Project Manager</option>
+              <option value="clgp">CLGP — Certified Leadership Governance Professional</option>
+              <option value="ccrm">CCRM — Certified Corporate Risk Manager</option>
+              <option value="ceem">CEEM — Certified ESG &amp; Environmental Manager</option>
+              <option value="cdgp">CDGP — Certified Data Governance Professional</option>
+              <option value="csmp">CSMP — Certified Strategy &amp; Management Professional</option>
+              <option value="cppm">CPPM — Certified Policy &amp; Public Management Professional</option>
+              <option value="cethm">CETHM — Certified Ethics &amp; Compliance Professional</option>
+              <option value="cdtl">CDTL — Certified Digital Transformation Leader</option>
+              <option value="ccsp">CCSP — Certified Change &amp; Strategy Professional</option>
+              <option value="cnlp">CNLP — Certified Non-Profit Leadership Professional</option>
+              <option value="cwlp">CWLP — Certified Women in Leadership Professional</option>
+            </optgroup>
+
+            <optgroup label="─── CIET Programmes ───">
+              <option value="ciet-professional-cert">Professional Certification (CIET)</option>
+              <option value="ciet-membership">Membership (CIET)</option>
+              <option value="ciet-qualification">Qualification Pathway (CIET)</option>
+            </optgroup>
+
+            <option value="other">Other / Not Yet Decided</option>
+          </select>
+        </div>
+        <div class="field-error" id="programmeErr">Please select a programme.</div>
+      </div>
+
+      <div class="field">
+        <label for="password">Password <span class="req">*</span></label>
+        <div class="pw-wrap">
+          <input type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password" />
+          <button class="pw-toggle" type="button" id="pwToggle1" aria-label="Show password">
+            <svg id="eyeIcon1" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="pw-strength" id="pwStrength" style="display:none;">
+          <div class="pw-strength-bar"><div class="pw-strength-fill" id="pwFill"></div></div>
+          <div class="pw-strength-label" id="pwLabel"></div>
+        </div>
+        <div class="field-error" id="passwordErr">Password must be at least 8 characters.</div>
+      </div>
+
+      <div class="field">
+        <label for="confirmPassword">Confirm Password <span class="req">*</span></label>
+        <div class="pw-wrap">
+          <input type="password" id="confirmPassword" placeholder="Repeat your password" autocomplete="new-password" />
+          <button class="pw-toggle" type="button" id="pwToggle2" aria-label="Show confirm password">
+            <svg id="eyeIcon2" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <div class="field-error" id="confirmPasswordErr">Passwords do not match.</div>
+      </div>
+
+      <div class="terms-check">
+        <input type="checkbox" id="terms" />
+        <label for="terms">
+          I agree to the <a href="#">Terms of Use</a> and <a href="#">Privacy Policy</a>. I understand my account must be approved by an administrator before I can access the platform.
+        </label>
+      </div>
+      <div class="field-error" id="termsErr" style="margin-top:-.75rem; margin-bottom:1rem;">You must agree to the terms to continue.</div>
+
+      <button class="btn-submit" id="submitBtn" type="button">
+        <span class="btn-text">Submit Enrolment Request →</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+
+    <!-- Success state (shown after signup) -->
+    <div class="success-state" id="successState">
+      <div class="success-icon">
+        <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h3>Request Submitted!</h3>
+      <p>
+        A verification email has been sent to<br/>
+        <span class="email-highlight" id="successEmail"></span><br/>
+        Click the link in that email to confirm your address.
+      </p>
+      <div class="success-notice">
+        <strong>What happens next?</strong> Once you verify your email, our admin team will review your enrolment request. You'll receive a separate email when your account has been approved and is ready to use. This typically takes 1–2 business days.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ════════════════════════════════════════ -->
+<footer>
+  <div class="footer__grid">
+    <div class="footer__brand">
+      <img src="assets/logos/learning-hub-footer.png" alt="The Professional Learning Hub" style="height:52px;width:auto;" onerror="this.onerror=null;this.src='assets/logos/learning-hub-logo.png';" />
+      <p>A dedicated platform for adult professionals to access study materials and sit examinations — securely, efficiently, and at their own pace.</p>
+    </div>
+    <nav class="footer__col" aria-label="Quick links">
+      <h4>Platform</h4>
+      <ul>
+        <li><a href="students.html">Students</a></li>
+        <li><a href="hiw.html">How It Works</a></li>
+        <li><a href="wlh.html">Why Learning Hub</a></li>
+        <li><a href="signup.html">Get Started</a></li>
+      </ul>
+    </nav>
+    <nav class="footer__col" aria-label="Access links">
+      <h4>Access</h4>
+      <ul>
+        <li><a href="login.html">Student Login</a></li>
+        <li><a href="adlogin.html">Admin Login</a></li>
+        <li><a href="signup.html">Enrol Now</a></li>
+      </ul>
+    </nav>
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:info@tplhub.com">info@tplhub.com</a></li>
+        <li style="font-size:.85rem;line-height:1.6;">For enrolment enquiries, contact your programme administrator directly.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer__bottom">
+    <span>© 2026 <span class="footer__gold">The Professional Learning Hub</span>. All rights reserved.</span>
+    <div style="display:flex;gap:1.5rem;">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ FIREBASE ══════════════════════════════════════ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    sendEmailVerification,
+    updateProfile
+  } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+  // ── Firebase config ──────────────────────────────────
+  const firebaseConfig = {
+    apiKey: "AIzaSyB05KazE7SqBjZQGPXGVdC7QVtrZjLRazU",
+    authDomain: "learning-hub-bf93c.firebaseapp.com",
+    projectId: "learning-hub-bf93c",
+    storageBucket: "learning-hub-bf93c.firebasestorage.app",
+    messagingSenderId: "317680009277",
+    appId: "1:317680009277:web:21344fbe84b1f07bf9ea54",
+    measurementId: "G-RKX3QKBY4N"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── DOM refs ─────────────────────────────────────────
+  const submitBtn     = document.getElementById('submitBtn');
+  const formAlert     = document.getElementById('formAlert');
+  const formBody      = document.getElementById('formBody');
+  const successState  = document.getElementById('successState');
+  const successEmail  = document.getElementById('successEmail');
+
+  // ── Password visibility toggles ──────────────────────
+  function makeToggle(btnId, inputId) {
+    document.getElementById(btnId).addEventListener('click', () => {
+      const input = document.getElementById(inputId);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    });
+  }
+  makeToggle('pwToggle1', 'password');
+  makeToggle('pwToggle2', 'confirmPassword');
+
+  // ── Password strength meter ───────────────────────────
+  document.getElementById('password').addEventListener('input', function () {
+    const val = this.value;
+    const bar = document.getElementById('pwStrength');
+    const fill = document.getElementById('pwFill');
+    const label = document.getElementById('pwLabel');
+
+    if (!val) { bar.style.display = 'none'; return; }
+    bar.style.display = 'block';
+
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    const levels = [
+      { pct: '25%', color: '#e74c3c', text: 'Weak' },
+      { pct: '50%', color: '#e67e22', text: 'Fair' },
+      { pct: '75%', color: '#f1c40f', text: 'Good' },
+      { pct: '100%', color: '#27ae60', text: 'Strong' },
+    ];
+    const l = levels[score - 1] || levels[0];
+    fill.style.width = l.pct;
+    fill.style.background = l.color;
+    label.textContent = l.text;
+    label.style.color = l.color;
+  });
+
+  // ── Helpers ───────────────────────────────────────────
+  function showErr(fieldId, errId, show) {
+    const input = document.getElementById(fieldId);
+    const err   = document.getElementById(errId);
+    if (show) {
+      input?.classList.add('error');
+      err?.classList.add('show');
+    } else {
+      input?.classList.remove('error');
+      err?.classList.remove('show');
+    }
+    return show;
+  }
+
+  function showAlert(type, msg) {
+    formAlert.className = `form-alert ${type}`;
+    formAlert.innerHTML = msg;
+    formAlert.style.display = 'flex';
+  }
+
+  function clearAlert() {
+    formAlert.style.display = 'none';
+    formAlert.className = 'form-alert';
+  }
+
+  // ── Validation ────────────────────────────────────────
+  function validate() {
+    let ok = true;
+    clearAlert();
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const programme = document.getElementById('programme').value;
+    const password  = document.getElementById('password').value;
+    const confirm   = document.getElementById('confirmPassword').value;
+    const terms     = document.getElementById('terms').checked;
+
+    if (showErr('firstName', 'firstNameErr', !firstName)) ok = false;
+    if (showErr('lastName',  'lastNameErr',  !lastName))  ok = false;
+    if (showErr('email', 'emailErr', !email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) ok = false;
+    if (showErr('programme', 'programmeErr', !programme)) ok = false;
+    if (showErr('password',  'passwordErr',  password.length < 8)) ok = false;
+    if (showErr('confirmPassword', 'confirmPasswordErr', password !== confirm)) ok = false;
+
+    const termsErr = document.getElementById('termsErr');
+    if (!terms) {
+      termsErr.classList.add('show');
+      ok = false;
+    } else {
+      termsErr.classList.remove('show');
+    }
+
+    return ok;
+  }
+
+  // ── Submit ────────────────────────────────────────────
+  submitBtn.addEventListener('click', async () => {
+    if (!validate()) return;
+
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const phone     = document.getElementById('phone').value.trim();
+    const programme = document.getElementById('programme').value;
+    const password  = document.getElementById('password').value;
+    const fullName  = `${firstName} ${lastName}`;
+
+    submitBtn.classList.add('loading');
+    submitBtn.disabled = true;
+
+    try {
+      // 1. Create Firebase Auth account
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // 2. Set display name
+      await updateProfile(user, { displayName: fullName });
+
+      // 3. Send email verification
+      await sendEmailVerification(user);
+
+      // 4. Save student record to Firestore (status: pending — admin must approve)
+      await setDoc(doc(db, 'students', user.uid), {
+        uid:         user.uid,
+        firstName,
+        lastName,
+        fullName,
+        email,
+        phone:       phone || null,
+        programme,
+        status:      'pending',          // admin changes this to 'approved'
+        emailVerified: false,
+        createdAt:   serverTimestamp(),
+        approvedAt:  null,
+        approvedBy:  null,
+      });
+
+      // 5. Show success state
+      formBody.style.display = 'none';
+      successEmail.textContent = email;
+      successState.classList.add('show');
+
+    } catch (err) {
+      console.error(err);
+      let msg = 'Something went wrong. Please try again.';
+      if (err.code === 'auth/email-already-in-use') {
+        msg = '⚠️ This email is already registered. <a href="login.html" style="color:var(--error);font-weight:700;">Sign in instead?</a>';
+      } else if (err.code === 'auth/invalid-email') {
+        msg = '⚠️ The email address is not valid.';
+      } else if (err.code === 'auth/weak-password') {
+        msg = '⚠️ Your password is too weak. Use at least 8 characters with a mix of letters and numbers.';
+      } else if (err.code === 'auth/network-request-failed') {
+        msg = '⚠️ Network error. Please check your connection and try again.';
+      }
+      showAlert('error', msg);
+      submitBtn.classList.remove('loading');
+      submitBtn.disabled = false;
+    }
+  });
+
+  // Clear individual errors on input
+  ['firstName','lastName','email','password','confirmPassword'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => {
+      document.getElementById(id).classList.remove('error');
+      document.getElementById(id + 'Err')?.classList.remove('show');
+      clearAlert();
+    });
+  });
+  document.getElementById('programme').addEventListener('change', () => {
+    document.getElementById('programme').classList.remove('error');
+    document.getElementById('programmeErr').classList.remove('show');
+  });
+</script>
+
+</body>
+</html>
